@@ -45,7 +45,7 @@ func MakeUsageRecord(appId int, userCount int) error {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(time.Now().Format("20060102150405"), userCount)
+	_, err = stmt.Exec(time.Now().UTC(), userCount)
 	if err != nil {
 		return err
 	}
@@ -53,33 +53,30 @@ func MakeUsageRecord(appId int, userCount int) error {
 	return nil
 }
 
-type UsageRecord struct {
-	Time  time.Time
-	Count int
-}
-
-// AllUsageRecords returns usage data for specified application.
-func AllUsageRecords(appId int) ([]UsageRecord, error) {
+// AllUsageRecords returns usage data for specified application as a collection
+// of two integers. First is a time, second - number of users.
+func AllUsageHistory(appId int) (history [][2]int64, err error) {
 	db, err := openAppUsageDB(appId)
 	if err != nil {
 		return nil, err
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT time, count FROM usage")
+	rows, err := db.Query("SELECT time, count FROM records ORDER BY time")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var records []UsageRecord
 	for rows.Next() {
-		var record UsageRecord
-		err := rows.Scan(&record.Time, &record.Count)
+		var record [2]int64
+		var t time.Time
+		err := rows.Scan(&t, &record[1])
 		if err != nil {
 			return nil, err
 		}
-		records = append(records, record)
+		record[0] = t.Unix()
+		history = append(history, record)
 	}
 	rows.Close()
-	return records, nil
+	return history, nil
 }

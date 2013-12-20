@@ -8,6 +8,7 @@ package storage
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
+	"log"
 	"time"
 )
 
@@ -66,26 +67,27 @@ func UpdateApps(apps []App) error {
 	return nil
 }
 
+// MarkAppAsUntrackable marks application as untrackable.
 func MarkAppAsUntrackable(appId int) error {
 	db, err := openMetadataDB()
 	if err != nil {
 		return err
 	}
 	defer db.Close()
-
 	_, err = db.Exec("UPDATE metadata SET trackable=0 WHERE id=?", appId)
 	if err != nil {
 		return err
 	}
 	return nil
 }
+
+// MarkAppAsTrackable marks application as trackable.
 func MarkAppAsTrackable(appId int) error {
 	db, err := openMetadataDB()
 	if err != nil {
 		return err
 	}
 	defer db.Close()
-
 	_, err = db.Exec("UPDATE metadata SET trackable=1 WHERE id=?", appId)
 	if err != nil {
 		return err
@@ -93,6 +95,7 @@ func MarkAppAsTrackable(appId int) error {
 	return nil
 }
 
+// AllTrackableApps returns a slice with all trackable applications.
 func AllTrackableApps() ([]App, error) {
 	db, err := openMetadataDB()
 	if err != nil {
@@ -117,28 +120,63 @@ func AllTrackableApps() ([]App, error) {
 	return apps, nil
 }
 
-// GetMetadata returns metadata about specified application.
-func GetMetadata(appId int) (name string, trackable bool, lastUpdate time.Time, err error) {
+// GetName returns name of the specified application.
+func GetName(appId int) (name string, err error) {
 	db, err := openMetadataDB()
 	if err != nil {
-		return name, trackable, lastUpdate, err
+		return name, err
 	}
 	defer db.Close()
 
-	stmt, err := db.Prepare("SELECT name, trackable, lastUpdate FROM metadata WHERE id = ?")
+	stmt, err := db.Prepare("SELECT name FROM metadata WHERE id = ?")
 	if err != nil {
-		return name, trackable, lastUpdate, err
+		return name, err
 	}
 	defer stmt.Close()
 
-	// Reading
-	err = stmt.QueryRow(appId).Scan(&name, &trackable, &lastUpdate)
+	err = stmt.QueryRow(appId).Scan(&name)
 	if err != nil {
-		return name, trackable, lastUpdate, err
+		return name, err
 	}
-	return name, trackable, lastUpdate, nil
+	return name, nil
 }
 
+func Search(query string) (apps []App, err error) {
+	db, err := openMetadataDB()
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare(`
+		SELECT id, name
+		FROM metadata
+		WHERE trackable=1 AND name LIKE ?
+		LIMIT 10
+		`)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var app App
+		err := rows.Scan(&app.Id, &app.Name)
+		if err != nil {
+			return nil, err
+		}
+		apps = append(apps, app)
+	}
+	rows.Close()
+	return apps, nil
+}
+
+// DetectUntrackableApps finds applications that have no active users and marks
+// them as untrackable.
 func DetectUntrackableApps() error {
 	apps, err := AllTrackableApps()
 	if err != nil {

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Steam Info - Application usage history</title>
+
+    <link href="//fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet" type="text/css">
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet"/>
+
+    {{template "head" .}}
+</head>
+
+<body>
+
+<header class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <strong><a class="navbar-brand" href="/">Steam Info</a></strong>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/about/">About</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    {{template "content" .}}
+</main>
+
+<footer class="container">
+    Powered by <a href="http://steampowered.com/">Steam</a>.
+    Hosted on <a href="https://www.linode.com/?r=a1eab6f6a8afc238f954d9bdb8a1b9ad8cb793e6">Linode</a>.
+</footer>
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-9427181-6']);
+    _gaq.push(['_setDomainName', 'steaminfo.net']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+</body>
+
+</html>

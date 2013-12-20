@@ -1,0 +1,229 @@
+{{define "head"}}
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.2/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/home.css" rel="stylesheet">
+
+    <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/zclip/1.1.2/jquery.zclip.min.js"></script>
+    <script src="/static/highstock.js"></script>
+{{end}}
+
+{{define "content"}}
+    <div class="row">
+
+        <div class="col-md-8">
+            <div id="chart" style="height:400px; min-width:100%; display: none;"></div>
+
+            <h3>Displayed apps:</h3>
+            <ul id="apps-list"></ul>
+
+            <a href="#" id="copy-link"><i class="fa fa-link"></i> Copy link to current set of apps</a>
+        </div>
+
+        <div id="search-box" class="col-md-4">
+            <form id="search" role="form">
+                <div class="form-group">
+                    <input id="search-input" type="text" autofocus="true" class="form-control" placeholder="Search"/>
+                </div>
+            </form>
+            <div id="search-info" class="alert alert-info">
+                Find some apps here and compare them!
+            </div>
+            <ol id="search-results"></ol>
+        </div>
+
+    </div>
+
+    <script>
+        // Hack from http://stackoverflow.com/a/2880929/272770
+        var urlParams = {};
+        (window.onpopstate = function () {
+            var match,
+                    pl = /\+/g,  // Regex for replacing addition symbol with a space
+                    search = /([^&=]+)=?([^&]*)/g,
+                    decode = function (s) {
+                        return decodeURIComponent(s.replace(pl, " "));
+                    },
+                    query = window.location.search.substring(1);
+            while (match = search.exec(query))
+                urlParams[decode(match[1])] = decode(match[2]);
+        })();
+
+        var list = []; // Used to store list of applications that user is working with
+        var apps = []; // Used to store downloaded data about each application
+
+        function findAppIndex(array, appId) {
+            var index = -1;
+            $.each(array, function (i, item) {
+                if (item.id == appId) index = i;
+            });
+            return index;
+        }
+
+        function addApp(appId, name) {
+            if (findAppIndex(list, appId) != -1) return; // Not adding the same app twice
+
+            console.log("Adding app #" + appId);
+            if (name === undefined) list.push({ id: appId })
+            else list.push({ id: appId, name: name })
+            updateAppsList();
+
+            // Loading data
+            $.getJSON('/history/' + appId + '.json', function (data) {
+                if (findAppIndex(list, appId) == -1) return; // Checking if still exists
+                apps.push({
+                    id: appId,
+                    name: data["name"],
+                    data: data["history"],
+                    type: 'spline',
+                    shadow: true,
+                    tooltip: { valueDecimals: 0 }
+                });
+                updateChart();
+
+                if (name === undefined) {
+                    var listIndex = findAppIndex(list, appId);
+                    list[listIndex] = { id: appId, name: data["app"] };
+                }
+                updateAppsList();
+            });
+        }
+
+        function removeApp(appId) {
+            // Removing form the list
+            var listIndex = findAppIndex(list, appId);
+            if (listIndex != -1) list.splice(listIndex, 1);
+
+            // Removing data is loaded
+            var appsIndex = findAppIndex(apps, appId);
+            if (appsIndex != -1) apps.splice(appsIndex, 1);
+
+            updateChart();
+            updateAppsList();
+        }
+
+        function updateAppsList() {
+            $('#apps-list').empty(); // Cleanup
+
+            $.each(list, function (i, app) {
+                if (findAppIndex(apps, app.id) != -1) {
+                    if (list.length > 1) {
+                        $('#apps-list').append(
+                                $('<li>').append(app.id + " : " + app.name + ' ')
+                                        .append($('<i>')
+                                                .attr('onclick', 'removeApp(' + app.id + ')')
+                                                .attr('onclick', 'removeApp(' + app.id + ')')
+                                                .attr('class', 'fa fa-times')));
+                    } else {
+                        $('#apps-list').append($('<li>').append(app.id + " : " + app.name + ' '));
+                    }
+                } else {
+                    if (app.name != null) {
+                        $('#apps-list').append(
+                                $('<li>').append(app.id + " : " + app.name + ' ')
+                                        .append("<i class=\"fa fa-spinner fa-spin\"></i>"));
+                    } else {
+                        $('#apps-list').append(
+                                $('<li>').append(app.id + ' ')
+                                        .append("<i class=\"fa fa-spinner fa-spin\"></i>"));
+                    }
+                }
+            });
+        }
+
+        function updateChart() {
+            var chart = $('#chart');
+            if (apps.length > 0) chart.show("fast");
+            else chart.hide("fast");
+
+            chart.highcharts('StockChart', {
+                rangeSelector: {
+                    buttons: [
+                        { type: 'day', count: 1, text: '1d' },
+                        { type: 'week', count: 1, text: '1w' },
+                        { type: 'month', count: 1, text: '1m' },
+                        { type: 'all', text: 'all' }
+                    ],
+                    selected: 1
+                },
+
+                xAxis: { type: 'datetime' },
+                yAxis: { min: 0 },
+
+                credits: { enabled: false },
+                exporting: { enabled: false },
+
+                series: apps
+            });
+        }
+
+        // Adding apps
+        if (urlParams["apps"] != null) {
+            var requestedApps = urlParams["apps"].split(',');
+            requestedApps.forEach(function (appId) {
+                addApp(appId);
+            });
+        } else {
+            addApp(0, "Steam Client");
+        }
+
+        /**
+         * Search
+         */
+        $("#search").submit(function () {
+            return false;
+        });
+        var lastSuggestRequest = null;
+        $("#search-input").keyup(function () {
+            var query = $("#search-input").val();
+            if (query.length > 2) {
+                console.log(query);
+                if (lastSuggestRequest != null) lastSuggestRequest.abort();
+                lastSuggestRequest = $.ajax({
+                    url: "/search",
+                    dataType: "json",
+                    data: {
+                        q: query
+                    },
+                    success: function (data) {
+                        lastSuggestRequest = null;
+                        var searchResults = $('#search-results');
+                        searchResults.empty();
+                        $('#search-info').hide("fast");
+                        if (data == null) return;
+                        $.each(data, function (i) {
+                            searchResults.append(
+                                    $('<li class="search-result">')
+                                            .append(data[i].name)
+                                            .append("<br/>")
+                                            .append('<div class="pull-left"><em>#' + data[i].appid + '</em></div>')
+                                            .append('<div class="pull-right"><a href="#" onclick="addApp(' + data[i].appid + ',\'' + data[i].name + '\');"><i class="fa fa-plus"></i> Add</a></div>'));
+                        });
+                    }
+                })
+            }
+        });
+
+
+        /**
+         * Clipboard stuff
+         */
+
+        function getLink() {
+            var link = window.location.origin + "/?apps=";
+            $.each(list, function (i, app) {
+                if (i != 0) link += ',';
+                link += app.id;
+            });
+            return link;
+        }
+
+        $(document).ready(function () {
+            $('a#copy-link').zclip({
+                path: '//cdnjs.cloudflare.com/ajax/libs/zclip/1.1.2/ZeroClipboard.swf',
+                copy: function () {
+                    return getLink();
+                }
+            });
+        });
+    </script>
+{{end}}

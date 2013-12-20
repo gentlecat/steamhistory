@@ -1,0 +1,19 @@
+#apps-list {
+    list-style: none;
+}
+
+.fa-times {
+    color: red;
+}
+
+#search-box {
+    border-left: 1px solid #eee;
+}
+
+.search-result {
+    clear: both;
+}
+
+.fa-plus {
+    color: green;
+}
