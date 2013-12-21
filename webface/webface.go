@@ -2,7 +2,6 @@ package webface
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/tsukanov/steaminfo-go/storage"
 	"html/template"
@@ -115,7 +114,7 @@ func aboutHandler(w http.ResponseWriter, r *http.Request) {
 
 // Start starts FastCGI server at 127.0.0.1:9000
 func Start() {
-	fmt.Println("Starting server...")
+	log.Println("Starting server...")
 	l, err := net.Listen("tcp", "127.0.0.1:9000")
 	if err != nil {
 		log.Fatal("Failed to start server!", err)
