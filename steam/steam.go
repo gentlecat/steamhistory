@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/tsukanov/steaminfo-go/storage"
 	"io/ioutil"
 	"net/http"
-	"storage"
 )
 
 // GetUserCount returns current number of users for a specified application.

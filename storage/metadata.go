@@ -8,7 +8,6 @@ package storage
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
-	"log"
 	"time"
 )
 
@@ -24,7 +23,7 @@ func openMetadataDB() (*sql.DB, error) {
 			CREATE TABLE IF NOT EXISTS metadata (
 				id INTEGER NOT NULL PRIMARY KEY,
 				name TEXT,
-				trackable BOOLEAN NOT NULL DEFAULT 1,
+				usable BOOLEAN NOT NULL DEFAULT 1,
 				lastUpdate DATETIME NOT NULL
 			);
 			`
@@ -67,43 +66,43 @@ func UpdateApps(apps []App) error {
 	return nil
 }
 
-// MarkAppAsUntrackable marks application as untrackable.
-func MarkAppAsUntrackable(appId int) error {
+// MarkAppAsUnusable marks application as unusable.
+func MarkAppAsUnusable(appId int) error {
 	db, err := openMetadataDB()
 	if err != nil {
 		return err
 	}
 	defer db.Close()
-	_, err = db.Exec("UPDATE metadata SET trackable=0 WHERE id=?", appId)
+	_, err = db.Exec("UPDATE metadata SET usable=0 WHERE id=?", appId)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-// MarkAppAsTrackable marks application as trackable.
-func MarkAppAsTrackable(appId int) error {
+// MarkAppAsUsable marks application as usable.
+func MarkAppAsUsable(appId int) error {
 	db, err := openMetadataDB()
 	if err != nil {
 		return err
 	}
 	defer db.Close()
-	_, err = db.Exec("UPDATE metadata SET trackable=1 WHERE id=?", appId)
+	_, err = db.Exec("UPDATE metadata SET usable=1 WHERE id=?", appId)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-// AllTrackableApps returns a slice with all trackable applications.
-func AllTrackableApps() ([]App, error) {
+// AllUsableApps returns a slice with all usable applications.
+func AllUsableApps() ([]App, error) {
 	db, err := openMetadataDB()
 	if err != nil {
 		return nil, err
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT id, name FROM metadata WHERE trackable = 1")
+	rows, err := db.Query("SELECT id, name FROM metadata WHERE usable=1")
 	if err != nil {
 		return nil, err
 	}
@@ -128,7 +127,7 @@ func GetName(appId int) (name string, err error) {
 	}
 	defer db.Close()
 
-	stmt, err := db.Prepare("SELECT name FROM metadata WHERE id = ?")
+	stmt, err := db.Prepare("SELECT name FROM metadata WHERE id=?")
 	if err != nil {
 		return name, err
 	}
@@ -151,14 +150,16 @@ func Search(query string) (apps []App, err error) {
 	stmt, err := db.Prepare(`
 		SELECT id, name
 		FROM metadata
-		WHERE trackable=1 AND name LIKE ?
+		WHERE usable=1 AND name LIKE ?
+			AND UPPER(name) LIKE ?
 		LIMIT 10
 		`)
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
-	rows, err := stmt.Query(query)
+	query = "%" + query + "%"
+	rows, err := stmt.Query(query, query)
 	if err != nil {
 		return nil, err
 	}
@@ -175,10 +176,10 @@ func Search(query string) (apps []App, err error) {
 	return apps, nil
 }
 
-// DetectUntrackableApps finds applications that have no active users and marks
-// them as untrackable.
-func DetectUntrackableApps() error {
-	apps, err := AllTrackableApps()
+// DetectUnusableApps finds applications that have no active users and marks
+// them as unusable.
+func DetectUnusableApps() error {
+	apps, err := AllUsableApps()
 	if err != nil {
 		return err
 	}
@@ -203,7 +204,7 @@ func DetectUntrackableApps() error {
 			return err
 		}
 		if count > 5 && avg < 1 {
-			err = MarkAppAsUntrackable(app.Id)
+			err = MarkAppAsUnusable(app.Id)
 			if err != nil {
 				return err
 			}

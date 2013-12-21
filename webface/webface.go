@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/tsukanov/steaminfo-go/storage"
 	"html/template"
 	"log"
 	"net"
 	"net/http"
 	"net/http/fcgi"
-	"storage"
 	"strconv"
 )
 

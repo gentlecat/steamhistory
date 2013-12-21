@@ -1,9 +1,9 @@
 package tracker
 
 import (
+	"github.com/tsukanov/steaminfo-go/steam"
+	"github.com/tsukanov/steaminfo-go/storage"
 	"log"
-	"steam"
-	"storage"
 	"sync"
 )
 
@@ -17,12 +17,11 @@ func worker(appIdChan chan int, wg *sync.WaitGroup) {
 			log.Print(err)
 		}
 		storage.MakeUsageRecord(appId, count)
-		log.Println(appId, "-", count)
 	}
 }
 
 func MakeRecords() error {
-	apps, err := storage.AllTrackableApps()
+	apps, err := storage.AllUsableApps()
 	if err != nil {
 		return err
 	}
