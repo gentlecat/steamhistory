@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"bitbucket.org/kardianos/osext"
 	"database/sql"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
@@ -10,14 +11,15 @@ import (
 // openAppUsageDB opens database with usage history for a specified application
 // and, if successful, returns a reference to it.
 func openAppUsageDB(appId int) (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", fmt.Sprintf("usagedata/%d.db", appId))
+	exeloc, err := osext.ExecutableFolder()
+	db, err := sql.Open("sqlite3", fmt.Sprintf("%susagedata/%d.db", exeloc, appId))
 	if err != nil {
 		return nil, err
 	}
 	// TODO: Check if file exists before attempting to create a table
 	sqlInitDB := `
 			CREATE TABLE IF NOT EXISTS records (
-				time DATETIME NOT NULL,
+				time DATETIME NOT NULL PRIMARY KEY,
 				count INTEGER NOT NULL
 			);
 			`

@@ -6,7 +6,9 @@ are available on Steam platform and their usage history.
 package storage
 
 import (
+	"bitbucket.org/kardianos/osext"
 	"database/sql"
+	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"time"
 )
@@ -14,7 +16,8 @@ import (
 // openDB opens database with metadata about all apps and, if successful,
 // returns a reference to it.
 func openMetadataDB() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", "app_metadata.db")
+	exeloc, err := osext.ExecutableFolder()
+	db, err := sql.Open("sqlite3", fmt.Sprintf("%sapp_metadata.db", exeloc))
 	if err != nil {
 		return nil, err
 	}
