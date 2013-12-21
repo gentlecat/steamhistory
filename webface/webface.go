@@ -1,6 +1,7 @@
 package webface
 
 import (
+	"bitbucket.org/kardianos/osext"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/tsukanov/steaminfo-go/storage"
@@ -22,9 +23,10 @@ func makeRouter() *mux.Router {
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
+	exeloc, err := osext.ExecutableFolder()
 	t, err := template.ParseFiles(
-		"webface/templates/base.html",
-		"webface/templates/home.html")
+		exeloc+"webface/templates/base.html",
+		exeloc+"webface/templates/home.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Println(err)
@@ -96,9 +98,10 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func aboutHandler(w http.ResponseWriter, r *http.Request) {
+	exeloc, err := osext.ExecutableFolder()
 	t, err := template.ParseFiles(
-		"webface/templates/base.html",
-		"webface/templates/about.html")
+		exeloc+"webface/templates/base.html",
+		exeloc+"webface/templates/about.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Println(err)
