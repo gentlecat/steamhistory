@@ -57,7 +57,7 @@ func UpdateApps(apps []App) error {
 	}
 	defer stmt.Close()
 	for i := range apps {
-		_, err = stmt.Exec(apps[i].Id, apps[i].Name, time.Now().Format("20060102150405"))
+		_, err = stmt.Exec(apps[i].Id, apps[i].Name, time.Now().UTC().Unix())
 		if err != nil {
 			return err
 		}

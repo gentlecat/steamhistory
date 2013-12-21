@@ -45,7 +45,7 @@ func MakeUsageRecord(appId int, userCount int) error {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(time.Now().UTC(), userCount)
+	_, err = stmt.Exec(time.Now().UTC().Unix(), userCount)
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func AllUsageHistory(appId int) (history [][2]int64, err error) {
 		if err != nil {
 			return nil, err
 		}
-		record[0] = t.Unix()
+		record[0] = t.Unix() * 1000 // For JavaScript
 		history = append(history, record)
 	}
 	rows.Close()
