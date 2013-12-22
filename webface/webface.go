@@ -80,8 +80,12 @@ func historyHandler(w http.ResponseWriter, r *http.Request) {
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	queries := r.URL.Query()
-	query := queries["q"][0]
-	results, err := storage.Search(query)
+	query, ok := queries["q"]
+	if !ok {
+		http.Error(w, "No query", http.StatusBadRequest)
+		return
+	}
+	results, err := storage.Search(query[0])
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Println(err)
