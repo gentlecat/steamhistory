@@ -10,6 +10,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"log"
 	"time"
 )
 
@@ -190,13 +191,14 @@ func DetectUnusableApps() error {
 	for _, app := range apps {
 		db, err := openAppUsageDB(app.Id)
 		if err != nil {
-			return err
+			log.Println(app, err)
+			continue
 		}
-		defer db.Close()
 
 		rows, err := db.Query("SELECT count(*), avg(count) FROM records")
 		if err != nil {
-			return err
+			log.Println(err)
+			continue
 		}
 		var count int
 		var avg float32
@@ -204,14 +206,19 @@ func DetectUnusableApps() error {
 		err = rows.Scan(&count, &avg)
 		rows.Close()
 		if err != nil {
-			return err
+			log.Println(err)
+			continue
 		}
 		if count > 5 && avg < 1 {
 			err = MarkAppAsUnusable(app.Id)
+			log.Println(fmt.Sprintf("Marked app %s (%d) as unusable", app.Name, app.Id))
 			if err != nil {
-				return err
+				log.Println(err)
+				continue
 			}
 		}
+
+		db.Close()
 	}
 	return nil
 }
