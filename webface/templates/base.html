@@ -9,7 +9,7 @@
 
     <link href="//fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet" type="text/css">
 
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/style.css" rel="stylesheet"/>
 
     {{template "head" .}}
@@ -17,43 +17,49 @@
 
 <body>
 
-<header class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-            <strong><a class="navbar-brand" href="/">Steam Info</a></strong>
+    <header class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <strong><a class="navbar-brand" href="/">Steam Info</a></strong>
+            </div>
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/about/">About</a></li>
+                </ul>
+            </div>
         </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="/about/">About</a></li>
-            </ul>
+    </header>
+
+    <main class="container">
+        {{template "content" .}}
+    </main>
+
+    <footer class="container">
+        <div class="pull-left">
+            Powered by <a href="http://steampowered.com/">Steam</a>.
+            Hosted on <a href="https://www.linode.com/?r=a1eab6f6a8afc238f954d9bdb8a1b9ad8cb793e6">Linode</a>.
         </div>
-    </div>
-</header>
+        <div class="pull-right">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/23/Golang.png" title="Built with help from Gophers <3"/>
+        </div>
+        
+    </footer>
 
-<main class="container">
-    {{template "content" .}}
-</main>
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-9427181-6']);
+        _gaq.push(['_setDomainName', 'steaminfo.net']);
+        _gaq.push(['_trackPageview']);
 
-<footer class="container">
-    Powered by <a href="http://steampowered.com/">Steam</a>.
-    Hosted on <a href="https://www.linode.com/?r=a1eab6f6a8afc238f954d9bdb8a1b9ad8cb793e6">Linode</a>.
-</footer>
-
-<script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-9427181-6']);
-    _gaq.push(['_setDomainName', 'steaminfo.net']);
-    _gaq.push(['_trackPageview']);
-
-    (function () {
-        var ga = document.createElement('script');
-        ga.type = 'text/javascript';
-        ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(ga, s);
-    })();
-</script>
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
 
 </body>
 
