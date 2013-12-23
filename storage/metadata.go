@@ -23,15 +23,14 @@ func openMetadataDB() (*sql.DB, error) {
 		return nil, err
 	}
 	// TODO: Check if file exists before attempting to create a table
-	sqlInitDB := `
-			CREATE TABLE IF NOT EXISTS metadata (
-				id INTEGER NOT NULL PRIMARY KEY,
-				name TEXT,
-				usable BOOLEAN NOT NULL DEFAULT 1,
-				lastUpdate DATETIME NOT NULL
-			);
-			`
-	_, err = db.Exec(sqlInitDB)
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS metadata (
+			id INTEGER NOT NULL PRIMARY KEY,
+			name TEXT,
+			usable BOOLEAN NOT NULL DEFAULT 1,
+			lastUpdate DATETIME NOT NULL
+		);
+		`)
 	if err != nil {
 		return nil, err
 	}
@@ -54,14 +53,16 @@ func UpdateApps(apps []App) error {
 	if err != nil {
 		return err
 	}
-	// TODO: Fix (needs to be upsert)
-	stmt, err := tx.Prepare("INSERT OR REPLACE INTO metadata (id, name, lastUpdate) VALUES (?, ?, ?)")
+	stmt, err := tx.Prepare(`
+		INSERT OR REPLACE INTO metadata (id, usable, name, lastUpdate) 
+  		VALUES (?, COALESCE((SELECT usable FROM metadata WHERE id=?), 1), ?, ?);
+		`)
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
 	for i := range apps {
-		_, err = stmt.Exec(apps[i].Id, apps[i].Name, time.Now().UTC().Unix())
+		_, err = stmt.Exec(apps[i].Id, apps[i].Id, apps[i].Name, time.Now().UTC().Unix())
 		if err != nil {
 			return err
 		}
