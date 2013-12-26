@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"log"
 	"time"
 )
 
@@ -81,4 +82,31 @@ func AllUsageHistory(appId int) (history [][2]int64, err error) {
 	}
 	rows.Close()
 	return history, nil
+}
+
+func cleanup(appId int) {
+	db, err := openAppUsageDB(appId)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer db.Close()
+	_, err = db.Exec("DELETE FROM records WHERE count=0")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+}
+
+// HistoryCleanup removes all records with 0 value for all usable apps.
+// This fixes an issue when API sometimes returnes 0 value.
+func HistoryCleanup() error {
+	apps, err := AllUsableApps()
+	if err != nil {
+		return err
+	}
+	for _, app := range apps {
+		cleanup(app.Id)
+	}
+	return nil
 }
