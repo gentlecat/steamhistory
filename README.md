@@ -1,5 +1,5 @@
 # Steam Info
-Application usage history tracker.
+Application usage history recorder.
 
 ## Dependencies
 * [github.com/mattn/go-sqlite3](https://github.com/mattn/go-sqlite3)
