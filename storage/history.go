@@ -56,7 +56,7 @@ func MakeUsageRecord(appId int, userCount int) error {
 	return nil
 }
 
-// AllUsageRecords returns usage data for specified application as a collection
+// AllUsageHistory returns usage data for specified application as a collection
 // of two integers. First is a time, second - number of users.
 func AllUsageHistory(appId int) (history [][2]int64, err error) {
 	db, err := openAppUsageDB(appId)

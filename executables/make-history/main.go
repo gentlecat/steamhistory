@@ -7,7 +7,7 @@ import (
 
 func main() {
 	log.Println("Recording app usage...")
-	err := tracker.MakeRecords()
+	err := tracker.RecordHistory()
 	if err != nil {
 		log.Fatal(err)
 	}

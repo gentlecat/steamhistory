@@ -20,7 +20,8 @@ func worker(appIdChan chan int, wg *sync.WaitGroup) {
 	}
 }
 
-func MakeRecords() error {
+// RecordHistory records current number of users for all usable applications.
+func RecordHistory() error {
 	apps, err := storage.AllUsableApps()
 	if err != nil {
 		return err
@@ -48,11 +49,11 @@ func MakeRecords() error {
 	return nil
 }
 
-func UpdateApps() error {
+func UpdateMetadata() error {
 	apps, err := steam.GetApps()
 	if err != nil {
 		return err
 	}
-	err = storage.UpdateApps(apps)
+	err = storage.UpdateMetadata(apps)
 	return err
 }

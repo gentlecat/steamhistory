@@ -42,8 +42,8 @@ type App struct {
 	Name string `json:"name"`
 }
 
-// UpdateApps updates metadata about application or creates a new record.
-func UpdateApps(apps []App) error {
+// UpdateMetadata updates metadata about application or creates a new record.
+func UpdateMetadata(apps []App) error {
 	db, err := openMetadataDB()
 	if err != nil {
 		return err
