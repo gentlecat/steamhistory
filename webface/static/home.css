@@ -1,19 +1,24 @@
 #apps-list {
-    list-style: none;
+	list-style: none;
 }
 
 .fa-times {
-    color: red;
+	color: red;
 }
 
-#search-box {
-    border-left: 1px solid #eee;
+#apps {
+	border-left: 1px solid #eee;
+}
+
+#apps-list {
+	padding-top: 10px;
+	padding-left: 0;
 }
 
 .search-result {
-    clear: both;
+	clear: both;
 }
 
 .fa-plus {
-    color: green;
+	color: green;
 }

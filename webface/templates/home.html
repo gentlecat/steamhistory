@@ -2,9 +2,14 @@
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
 <link href="/static/home.css" rel="stylesheet">
 
-<script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/zclip/1.1.2/jquery.zclip.min.js"></script>
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+
 <script src="/static/highstock.js"></script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/select2/3.4.4/select2.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.4.4/select2.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/1.2.3/ZeroClipboard.min.js"></script>
 {{end}}
 
 {{define "content"}}
@@ -12,27 +17,37 @@
 
     <div class="col-md-8">
         <div id="chart" style="height:400px; min-width:100%; display: none;"></div>
-
-        <h3>Displayed apps:</h3>
-        <ul id="apps-list"></ul>
-
-        <a href="#" id="copy-link"><i class="fa fa-link"></i> Copy link to current set of apps</a>
     </div>
 
-    <div id="search-box" class="col-md-4">
-        <form id="search" role="form">
-            <div class="form-group">
-                <input id="search-input" type="text" autofocus="true" class="form-control" placeholder="Search"/>
-            </div>
-        </form>
-        <div id="search-info" class="alert alert-info">
-            Find some apps here and compare them!
-        </div>
-        <ol id="search-results"></ol>
+    <div id="apps" class="col-md-4">
+        <h3>Displayed apps:</h3>
+        <input type="hidden" id="search" style="width:360px" />
+        <ul id="apps-list"></ul>
+
+        <button id="copy-link"><i class="fa fa-link"></i> Copy link to current set of apps</a></button>
     </div>
 </div>
 
 <script>
+// Search
+$(document).ready(function() {
+    $("#search").select2({
+        placeholder: "Add application",
+        minimumInputLength: 1,
+        ajax: { 
+            url: "/search",
+            dataType: 'json',
+            data: function (term, page) { return { q: term }; },
+            results: function (data, page) { return {results: data}; }
+        },
+        id: function(object) { return object.appid; },
+        formatResult: function(object) { return "<span style='color:grey'>" +object.appid + "</span> <b>" + object.name + "</b>"; },
+        triggerChange: false,
+        formatSelection: function(object) { return object.name; },
+        escapeMarkup: function (m) { return m; } 
+    });
+    $("#search").on("change", function(e) { addApp(e.val) });
+
         // Hack from http://stackoverflow.com/a/2880929/272770
         var urlParams = {};
         (window.onpopstate = function () {
@@ -81,7 +96,7 @@
 
                 if (name === undefined) {
                     var listIndex = findAppIndex(list, appId);
-                    list[listIndex] = { id: appId, name: data["app"] };
+                    list[listIndex] = { id: appId, name: data["name"] };
                 }
                 updateAppsList();
             });
@@ -107,22 +122,22 @@
                 if (findAppIndex(apps, app.id) != -1) {
                     if (list.length > 1) {
                         $('#apps-list').append(
-                            $('<li>').append(app.id + " : " + app.name + ' ')
+                            $('<li>').append("<span style='color:grey'>" +app.id + "</span> <b>" + app.name + "</b> ")
                             .append($('<i>')
                                 .attr('onclick', 'removeApp(' + app.id + ')')
                                 .attr('onclick', 'removeApp(' + app.id + ')')
                                 .attr('class', 'fa fa-times')));
                     } else {
-                        $('#apps-list').append($('<li>').append(app.id + " : " + app.name + ' '));
+                        $('#apps-list').append($('<li>').append("<span style='color:grey'>" +app.id + "</span> <b>" + app.name + "</b> "));
                     }
                 } else {
                     if (app.name != null) {
                         $('#apps-list').append(
-                            $('<li>').append(app.id + " : " + app.name + ' ')
+                            $('<li>').append("<span style='color:grey'>" +app.id + "</span> <b>" + app.name + "</b> ")
                             .append("<i class=\"fa fa-spinner fa-spin\"></i>"));
                     } else {
                         $('#apps-list').append(
-                            $('<li>').append(app.id + ' ')
+                            $('<li>').append("<span style='color:grey'>" +app.id + "</span> ")
                             .append("<i class=\"fa fa-spinner fa-spin\"></i>"));
                     }
                 }
@@ -166,63 +181,24 @@ function updateChart() {
         }
 
         /**
-         * Search
-         */
-         $("#search").submit(function () {
-            return false;
-        });
-         var lastSuggestRequest = null;
-         $("#search-input").keyup(function () {
-            var query = $("#search-input").val();
-            if (query.length > 2) {
-                console.log(query);
-                if (lastSuggestRequest != null) lastSuggestRequest.abort();
-                lastSuggestRequest = $.ajax({
-                    url: "/search",
-                    dataType: "json",
-                    data: {
-                        q: query
-                    },
-                    success: function (data) {
-                        lastSuggestRequest = null;
-                        var searchResults = $('#search-results');
-                        searchResults.empty();
-                        $('#search-info').hide("fast");
-                        if (data == null) return;
-                        $.each(data, function (i) {
-                            searchResults.append(
-                                $('<li class="search-result">')
-                                .append(data[i].name)
-                                .append("<br/>")
-                                .append('<div class="pull-left"><em>#' + data[i].appid + '</em></div>')
-                                .append('<div class="pull-right"><a href="#" onclick="addApp(' + data[i].appid + ',\'' + data[i].name + '\');"><i class="fa fa-plus"></i> Add</a></div>'));
-                        });
-                    }
-                })
-}
-});
-
-
-        /**
          * Clipboard stuff
          */
-
          function getLink() {
-            var link = window.location.origin + "/?apps=";
+            var link = 'http://' + $(location).attr('host') + "/?apps=";
             $.each(list, function (i, app) {
                 if (i != 0) link += ',';
                 link += app.id;
             });
             return link;
         }
+        ZeroClipboard.setDefaults( {
+            moviePath: '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/1.2.3/ZeroClipboard.swf',
+            allowScriptAccess: "always",
+            trustedDomains: location.hostname
+        } );
+        var clip = new ZeroClipboard(document.getElementById("copy-link"));
+        clip.on('dataRequested', function (client, args) { client.setText(getLink()); });
 
-        $(document).ready(function () {
-            $('a#copy-link').zclip({
-                path: '//cdnjs.cloudflare.com/ajax/libs/zclip/1.1.2/ZeroClipboard.swf',
-                copy: function () {
-                    return getLink();
-                }
-            });
-        });
-    </script>
-    {{end}}
+    });
+</script>
+{{end}}
