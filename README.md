@@ -1,4 +1,4 @@
-# Steam Info
+# [Steam History](http://steamhistory.com/)
 Application usage history recorder.
 
 ## Dependencies
