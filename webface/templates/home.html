@@ -28,39 +28,26 @@
     </div>
 </div>
 
-<script>
-// Search
-$(document).ready(function() {
-    $("#search").select2({
-        placeholder: "Add application",
-        minimumInputLength: 1,
-        ajax: { 
-            url: "/search",
-            dataType: 'json',
-            data: function (term, page) { return { q: term }; },
-            results: function (data, page) { return {results: data}; }
-        },
-        id: function(object) { return object.appid; },
-        formatResult: function(object) { return "<span style='color:grey'>" +object.appid + "</span> <b>" + object.name + "</b>"; },
-        triggerChange: false,
-        formatSelection: function(object) { return object.name; },
-        escapeMarkup: function (m) { return m; } 
+<script>    
+    $(document).ready(function() {
+        // Search
+        $("#search").select2({
+            placeholder: "Add application",
+            minimumInputLength: 1,
+            ajax: { 
+                url: "/search",
+                dataType: 'json',
+                data: function (term, page) { return { q: term }; },
+                results: function (data, page) { return {results: data}; }
+            },
+            id: function(object) { return object.appid; },
+            formatResult: function(object) { return "<span style='color:grey'>" +object.appid + "</span> <b>" + object.name + "</b>"; },
+            triggerChange: false,
+            formatSelection: function(object) { return object.name; },
+            escapeMarkup: function (m) { return m; } 
+        });
+        $("#search").on("change", function(e) { addApp(e.val) });
     });
-    $("#search").on("change", function(e) { addApp(e.val) });
-
-        // Hack from http://stackoverflow.com/a/2880929/272770
-        var urlParams = {};
-        (window.onpopstate = function () {
-            var match,
-                    pl = /\+/g,  // Regex for replacing addition symbol with a space
-                    search = /([^&=]+)=?([^&]*)/g,
-                    decode = function (s) {
-                        return decodeURIComponent(s.replace(pl, " "));
-                    },
-                    query = window.location.search.substring(1);
-                    while (match = search.exec(query))
-                        urlParams[decode(match[1])] = decode(match[2]);
-                })();
 
         var list = []; // Used to store list of applications that user is working with
         var apps = []; // Used to store downloaded data about each application
@@ -142,47 +129,61 @@ $(document).ready(function() {
                     }
                 }
             });
-}
-
-function updateChart() {
-    var chart = $('#chart');
-    if (apps.length > 0) chart.show("fast");
-    else chart.hide("fast");
-
-    chart.highcharts('StockChart', {
-        rangeSelector: {
-            buttons: [
-            { type: 'day', count: 1, text: '1d' },
-            { type: 'week', count: 1, text: '1w' },
-            { type: 'month', count: 1, text: '1m' },
-            { type: 'all', text: 'all' }
-            ],
-            selected: 1
-        },
-
-        xAxis: { type: 'datetime' },
-        yAxis: { min: 0 },
-
-        credits: { enabled: false },
-        exporting: { enabled: false },
-
-        series: apps
-    });
-}
-
-        // Adding apps
-        if (urlParams["apps"] != null) {
-            var requestedApps = urlParams["apps"].split(',');
-            requestedApps.forEach(function (appId) {
-                addApp(appId);
-            });
-        } else {
-            addApp(0, "Steam Client");
         }
+
+        function updateChart() {
+            var chart = $('#chart');
+            if (apps.length > 0) chart.show("fast");
+            else chart.hide("fast");
+
+            chart.highcharts('StockChart', {
+                rangeSelector: {
+                    buttons: [
+                    { type: 'day', count: 1, text: '1d' },
+                    { type: 'week', count: 1, text: '1w' },
+                    { type: 'month', count: 1, text: '1m' },
+                    { type: 'all', text: 'all' }
+                    ],
+                    selected: 1
+                },
+
+                xAxis: { type: 'datetime' },
+                yAxis: { min: 0 },
+
+                credits: { enabled: false },
+                exporting: { enabled: false },
+
+                series: apps
+            });
+        }
+
+        // Adding apps        
+        // Hack from http://stackoverflow.com/a/2880929/272770
+        var urlParams = {};
+        (window.onpopstate = function () {
+            var match,
+                    pl = /\+/g,  // Regex for replacing addition symbol with a space
+                    search = /([^&=]+)=?([^&]*)/g,
+                    decode = function (s) {
+                        return decodeURIComponent(s.replace(pl, " "));
+                    },
+                    query = window.location.search.substring(1);
+                    while (match = search.exec(query))
+                        urlParams[decode(match[1])] = decode(match[2]);
+                })();
+                if (urlParams["apps"] != null) {
+                    var requestedApps = urlParams["apps"].split(',');
+                    requestedApps.forEach(function (appId) {
+                        addApp(appId);
+                    });
+                } else {
+                    addApp(0, "Steam Client");
+                }
 
         /**
          * Clipboard stuff
          */
+          $(document).ready(function() {
          function getLink() {
             var link = 'http://' + $(location).attr('host') + "/?apps=";
             $.each(list, function (i, app) {
@@ -198,7 +199,6 @@ function updateChart() {
         } );
         var clip = new ZeroClipboard(document.getElementById("copy-link"));
         clip.on('dataRequested', function (client, args) { client.setText(getLink()); });
-
     });
-</script>
-{{end}}
+    </script>
+    {{end}}
