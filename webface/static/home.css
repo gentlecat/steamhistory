@@ -4,6 +4,8 @@
 
 .fa-times {
 	color: red;
+	cursor: pointer; 
+	cursor: hand; 
 }
 
 #apps {
