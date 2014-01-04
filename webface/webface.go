@@ -3,6 +3,7 @@ package webface
 import (
 	"bitbucket.org/kardianos/osext"
 	"encoding/json"
+	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/gorilla/mux"
 	"github.com/tsukanov/steaminfo-go/storage"
 	"html/template"
@@ -48,31 +49,40 @@ func historyHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	name, err := storage.GetName(appId)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-	history, err := storage.AllUsageHistory(appId)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-	type jason struct {
-		Name    string     `json:"name"`
-		History [][2]int64 `json:"history"`
-	}
-	result := jason{
-		Name:    name,
-		History: history,
-	}
-	b, err := json.Marshal(result)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Println(err)
-		return
+
+	mc := memcache.New("localhost:11211")
+	it, err := mc.Get("history_" + string(appId))
+	var b []byte
+	if err == nil {
+		b = it.Value
+	} else {
+		name, err := storage.GetName(appId)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		history, err := storage.AllUsageHistory(appId)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		type jason struct {
+			Name    string     `json:"name"`
+			History [][2]int64 `json:"history"`
+		}
+		result := jason{
+			Name:    name,
+			History: history,
+		}
+		b, err = json.Marshal(result)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		mc.Set(&memcache.Item{Key: "history_" + string(appId), Value: b, Expiration: 1800}) // 1800 sec = 30 min
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
