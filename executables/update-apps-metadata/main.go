@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/tsukanov/steaminfo-go/tracker"
+	"github.com/tsukanov/steamhistory/tracker"
 	"log"
 )
 

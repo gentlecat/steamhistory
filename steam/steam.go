@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/tsukanov/steaminfo-go/storage"
+	"github.com/tsukanov/steamhistory/storage"
 	"io/ioutil"
 	"net/http"
 )

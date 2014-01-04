@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/tsukanov/steaminfo-go/webface"
+	"github.com/tsukanov/steamhistory/webface"
 	"os"
 )
 

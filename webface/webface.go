@@ -2,10 +2,12 @@ package webface
 
 import (
 	"bitbucket.org/kardianos/osext"
+	"crypto/md5"
 	"encoding/json"
+	"fmt"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/gorilla/mux"
-	"github.com/tsukanov/steaminfo-go/storage"
+	"github.com/tsukanov/steamhistory/storage"
 	"html/template"
 	"log"
 	"net"
@@ -13,6 +15,8 @@ import (
 	"net/http/fcgi"
 	"strconv"
 )
+
+var mc *memcache.Client = memcache.New("localhost:11211")
 
 func makeRouter() *mux.Router {
 	r := mux.NewRouter()
@@ -50,8 +54,8 @@ func historyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mc := memcache.New("localhost:11211")
-	it, err := mc.Get("history_" + string(appId))
+	key := "history_" + strconv.Itoa(appId)
+	it, err := mc.Get(key)
 	var b []byte
 	if err == nil {
 		b = it.Value
@@ -82,7 +86,10 @@ func historyHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			return
 		}
-		mc.Set(&memcache.Item{Key: "history_" + string(appId), Value: b, Expiration: 1800}) // 1800 sec = 30 min
+		err = mc.Set(&memcache.Item{Key: key, Value: b, Expiration: 1800}) // 1800 sec = 30 min
+		if err != nil {
+			log.Println(err)
+		}
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
@@ -95,17 +102,30 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "No query", http.StatusBadRequest)
 		return
 	}
-	results, err := storage.Search(query[0])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-	b, err := json.Marshal(results)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Println(err)
-		return
+
+	h := md5.New()
+	key := fmt.Sprintf("%x", h.Sum([]byte(query[0])))
+	it, err := mc.Get(key)
+	var b []byte
+	if err == nil {
+		b = it.Value
+	} else {
+		results, err := storage.Search(query[0])
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		b, err = json.Marshal(results)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		err = mc.Set(&memcache.Item{Key: key, Value: b, Expiration: 43200}) // 43200 sec = 12 hours
+		if err != nil {
+			log.Println(err)
+		}
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)

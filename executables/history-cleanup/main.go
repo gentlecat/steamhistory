@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/tsukanov/steaminfo-go/storage"
+	"github.com/tsukanov/steamhistory/storage"
 	"log"
 )
 

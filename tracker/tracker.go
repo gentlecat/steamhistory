@@ -1,8 +1,8 @@
 package tracker
 
 import (
-	"github.com/tsukanov/steaminfo-go/steam"
-	"github.com/tsukanov/steaminfo-go/storage"
+	"github.com/tsukanov/steamhistory/steam"
+	"github.com/tsukanov/steamhistory/storage"
 	"log"
 	"sync"
 )
