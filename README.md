@@ -6,3 +6,5 @@ Application usage history recorder.
 * [github.com/gorilla/mux](https://github.com/gorilla/mux)
 * [bitbucket.org/kardianos/osext](https://bitbucket.org/kardianos/osext/src)
 * [github.com/bradfitz/gomemcache/memcache](https://github.com/bradfitz/gomemcache/memcache)
+* [github.com/axw/gocov/gocov](https://github.com/axw/gocov/)
+* [github.com/mattn/goveralls](https://github.com/mattn/goveralls)

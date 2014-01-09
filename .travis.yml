@@ -9,6 +9,9 @@ install:
   - go get github.com/gorilla/mux
   - go get github.com/bradfitz/gomemcache/memcache
   - go get bitbucket.org/kardianos/osext
+  - go get github.com/axw/gocov/gocov
+  - go get github.com/mattn/goveralls
 
 script:
-  - go test github.com/tsukanov/steamhistory/storage
+  - $HOME/gopath/bin/goveralls X9TZMTiEgfL209YAJYjrJx3tOWj5HQaOv
+  - go test ./...
