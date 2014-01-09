@@ -6,6 +6,7 @@ import (
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
+	"os"
 	"time"
 )
 
@@ -13,6 +14,10 @@ import (
 // and, if successful, returns a reference to it.
 func openAppUsageDB(appId int) (*sql.DB, error) {
 	exeloc, err := osext.ExecutableFolder()
+	err = os.MkdirAll(exeloc+"usagedata", 0774)
+	if err != nil {
+		return nil, err
+	}
 	db, err := sql.Open("sqlite3", fmt.Sprintf("%susagedata/%d.db", exeloc, appId))
 	if err != nil {
 		return nil, err
