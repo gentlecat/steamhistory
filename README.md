@@ -1,4 +1,4 @@
-# [Steam History](http://steamhistory.com/)
+# [Steam History](http://steamhistory.com/) [![Build Status](https://api.travis-ci.org/Tsukanov/steamhistory.png)](https://travis-ci.org/Tsukanov/steamhistory)
 Application usage history recorder.
 
 ## Dependencies
