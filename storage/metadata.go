@@ -1,7 +1,8 @@
 /*
-Package storage serves as an interface to storage system that consists of
-multiple SQLite databases. They contain information about applications that
-are available on Steam platform and their usage history.
+Package storage provides interface to storage system.
+Storage system consists of multiple SQLite databases:
+ - database with metadata about applications;
+ - databases with usage history for every application.
 */
 package storage
 

@@ -1,10 +1,10 @@
 /*
-Package webface provides web interface to recorded usage history.
+Package webface provides web interface to view collected data.
 It will not work unless you copy static files and templates into
 directory with an executable:
  - webface/templates/*
  - webface/static/*
-Web server must serve static files.
+Web server must serve static files!
 */
 package webface
 

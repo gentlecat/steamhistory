@@ -1,3 +1,5 @@
+// Package tracker manages interaction with Steam, history recording and
+// application metadata updates.
 package tracker
 
 import (

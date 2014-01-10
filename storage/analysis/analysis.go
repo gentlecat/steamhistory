@@ -1,3 +1,4 @@
+// Package analysis provides functions that can help analyze collected data.
 package analysis
 
 import (

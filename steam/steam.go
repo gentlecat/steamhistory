@@ -1,4 +1,4 @@
-// Package steam serves as an interface to Steam Web API
+// Package steam provides interface to some parts of Steam Web API.
 package steam
 
 import (
