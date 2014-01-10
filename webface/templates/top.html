@@ -1,0 +1,45 @@
+{{define "head"}}
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+<link href="/static/top.css" rel="stylesheet">
+
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+{{end}}
+
+{{define "content"}}
+<div class="page-header">
+  <h1>Top apps <small>Today</small></h1>
+</div>
+
+<div id="loading-msg"><i class="fa fa-spinner fa-spin"></i> Loading...</div>
+
+<table id="top-table" class="table" style="display: none;">
+    <thead><tr>
+        <th>#</th>
+        <th></th>
+        <th>Name</th>
+        <th>Peak</th>
+    </tr></thead>
+</table>
+
+<script>
+function parseRow(key, row) {
+    var html = $('<tr>');
+    html.append($('<td>' + key + '</td>'))
+        .append($('<td><img src="http://cdn.steampowered.com/v/gfx/apps/' + row.app.appid + '/capsule_184x69.jpg" /></td>'))
+        .append($('<td><a href="/?apps=' + row.app.appid + '">' + row.app.name + '</a></td>'))
+        .append($('<td><abbr title="' + row.peak.time + '">' + row.peak.count + '</abbr></td>'))
+    return html;
+}
+
+$(document).ready(function() {
+    // Loading data
+    $.getJSON('/top/daily.json', function (data) {
+        $.each(data, function(key, row) {
+            $("#top-table").append(parseRow(key, row));
+        });
+        $("#loading-msg").hide("fast");
+        $("#top-table").show("fast");
+    });
+});
+</script>
+{{end}}

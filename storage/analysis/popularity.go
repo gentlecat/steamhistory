@@ -55,8 +55,8 @@ func MostPopularAppsToday() ([]appRow, error) {
 
 	sort.Sort(byPeak(rows))
 
-	if len(rows) <= 10 {
+	if len(rows) <= 100 {
 		return rows, nil
 	}
-	return rows[:10], nil
+	return rows[:100], nil
 }

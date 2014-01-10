@@ -31,7 +31,8 @@ func makeRouter() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/", homeHandler)
 	r.HandleFunc("/history/{appid:[0-9]+}.json", historyHandler)
-	r.HandleFunc("/top.json", topHandler)
+	r.HandleFunc("/top/", topHandler)
+	r.HandleFunc("/top/daily.json", dailyTopHandler)
 	r.HandleFunc("/search", searchHandler)
 	r.HandleFunc("/about/", aboutHandler)
 	return r
@@ -104,7 +105,26 @@ func historyHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
 }
+
 func topHandler(w http.ResponseWriter, r *http.Request) {
+	exeloc, err := osext.ExecutableFolder()
+	t, err := template.ParseFiles(
+		exeloc+"webface/templates/base.html",
+		exeloc+"webface/templates/top.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	err = t.Execute(w, r.URL)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+}
+
+func dailyTopHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := analysis.MostPopularAppsToday()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -14,12 +14,12 @@
 
     {{template "head" .}}
 
+    <!-- Google Analytics -->
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
           (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
       ga('create', 'UA-9427181-6', 'steamhistory.com');
       ga('send', 'pageview');
     </script>
@@ -33,6 +33,9 @@
                 <strong><a class="navbar-brand" href="/">Steam History</a></strong>
             </div>
             <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/top/">Top apps</a></li>
+                </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/about/">About</a></li>
                 </ul>
@@ -46,7 +49,8 @@
 
     <footer class="container">
         Powered by <a href="http://steampowered.com/">Steam</a>.
-        <a href="https://github.com/Tsukanov/steamhistory">Open source</a>.
+        Created by <a href="http://tsukanov.me">me</a>.
+        <strong><a href="https://github.com/Tsukanov/steamhistory">Open source</a>.</strong>
     </footer>
 
 </body>
