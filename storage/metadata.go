@@ -18,7 +18,10 @@ import (
 // returns a reference to it.
 func openMetadataDB() (*sql.DB, error) {
 	exeloc, err := osext.ExecutableFolder()
-	db, err := sql.Open("sqlite3", fmt.Sprintf("%sapp_metadata.db", exeloc))
+	if err != nil {
+		return nil, err
+	}
+	db, err := sql.Open("sqlite3", exeloc+"app_metadata.db")
 	if err != nil {
 		return nil, err
 	}
@@ -210,7 +213,7 @@ func DetectUnusableApps() error {
 			log.Println(err)
 			continue
 		}
-		if count > 5 && avg < 1 {
+		if count > 10 && avg < 1 {
 			err = MarkAppAsUnusable(app.Id)
 			log.Println(fmt.Sprintf("Marked app %s (%d) as unusable", app.Name, app.Id))
 			if err != nil {

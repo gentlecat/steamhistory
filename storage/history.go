@@ -14,6 +14,9 @@ import (
 // and, if successful, returns a reference to it.
 func openAppUsageDB(appId int) (*sql.DB, error) {
 	exeloc, err := osext.ExecutableFolder()
+	if err != nil {
+		return nil, err
+	}
 	err = os.MkdirAll(exeloc+"usagedata", 0774)
 	if err != nil {
 		return nil, err
