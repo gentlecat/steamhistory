@@ -24,11 +24,16 @@ func TestRecording(t *testing.T) {
 			UserCount: 10,
 		},
 		{
+			AppId:     220,
+			UserCount: 0,
+		},
+		{
 			AppId:     8000,
-			UserCount: 8000000,
+			UserCount: 0,
 		},
 	}
 
+	// Adding samples
 	for _, sample := range samples {
 		// Making usage record
 		err := MakeUsageRecord(sample.AppId, sample.UserCount)
@@ -37,6 +42,7 @@ func TestRecording(t *testing.T) {
 		}
 	}
 
+	// Checking if they have been saved
 	for _, sample := range samples {
 		history, err := AllUsageHistory(sample.AppId)
 		if err != nil {
@@ -51,6 +57,21 @@ func TestRecording(t *testing.T) {
 		}
 		if !found {
 			t.Error("Can't find sample", sample)
+		}
+	}
+
+	// Testing cleanup
+	err := HistoryCleanup()
+	if err != nil {
+		t.Error(err)
+	}
+	for _, sample := range samples {
+		history, err := AllUsageHistory(sample.AppId)
+		if err != nil {
+			t.Error(err)
+		}
+		if len(history) > 0 {
+			t.Error("Did not remove sample", sample)
 		}
 	}
 }
