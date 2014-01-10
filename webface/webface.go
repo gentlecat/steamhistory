@@ -16,6 +16,7 @@ import (
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/gorilla/mux"
 	"github.com/tsukanov/steamhistory/storage"
+	"github.com/tsukanov/steamhistory/storage/analysis"
 	"html/template"
 	"log"
 	"net"
@@ -30,6 +31,7 @@ func makeRouter() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/", homeHandler)
 	r.HandleFunc("/history/{appid:[0-9]+}.json", historyHandler)
+	r.HandleFunc("/top.json", topHandler)
 	r.HandleFunc("/search", searchHandler)
 	r.HandleFunc("/about/", aboutHandler)
 	return r
@@ -99,6 +101,24 @@ func historyHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 		}
 	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(b)
+}
+func topHandler(w http.ResponseWriter, r *http.Request) {
+	rows, err := analysis.MostPopularAppsToday()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	b, err := json.Marshal(rows)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
 }

@@ -1,19 +1,20 @@
 package analysis
 
 import (
+	"database/sql"
+	"fmt"
 	"github.com/tsukanov/steamhistory/storage"
 	"sort"
-	"time"
 )
 
 type peak struct {
-	Count int
-	Time  time.Time
+	Count int       `json:"count"`
+	Time  time.Time `json:"time"`
 }
 
 type appRow struct {
-	App  storage.App
-	Peak peak
+	App  storage.App `json:"app"`
+	Peak peak        `json:"peak"`
 }
 
 type byPeak []appRow
@@ -33,11 +34,21 @@ func MostPopularAppsToday() ([]appRow, error) {
 	now := time.Now().UTC()
 	yesterday := now.Add(-24 * time.Hour)
 	for _, app := range apps {
-		var currentRow appRow
-		var currentPeak peak
-		currentPeak.Count, currentPeak.Time, err = storage.GetPeakBetween(yesterday, now, app.Id)
+		count, tim, err := storage.GetPeakBetween(yesterday, now, app.Id)
 		if err != nil {
-			return nil, err
+			switch {
+			case err == sql.ErrNoRows:
+				continue
+			default:
+				return nil, err
+			}
+		}
+		currentRow := appRow{
+			App: app,
+			Peak: peak{
+				Count: count,
+				Time:  tim,
+			},
 		}
 		rows = append(rows, currentRow)
 	}
