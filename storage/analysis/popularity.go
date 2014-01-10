@@ -2,9 +2,9 @@ package analysis
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/tsukanov/steamhistory/storage"
 	"sort"
+	"time"
 )
 
 type peak struct {
