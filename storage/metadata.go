@@ -8,15 +8,13 @@ package storage
 import (
 	"bitbucket.org/kardianos/osext"
 	"database/sql"
-	"fmt"
 	_ "github.com/mattn/go-sqlite3"
-	"log"
 	"time"
 )
 
-// openDB opens database with metadata about all apps and, if successful,
+// OpenMetadataDB opens database with metadata about all apps and, if successful,
 // returns a reference to it.
-func openMetadataDB() (*sql.DB, error) {
+func OpenMetadataDB() (*sql.DB, error) {
 	exeloc, err := osext.ExecutableFolder()
 	if err != nil {
 		return nil, err
@@ -47,7 +45,7 @@ type App struct {
 
 // UpdateMetadata updates metadata about application or creates a new record.
 func UpdateMetadata(apps []App) error {
-	db, err := openMetadataDB()
+	db, err := OpenMetadataDB()
 	if err != nil {
 		return err
 	}
@@ -76,7 +74,7 @@ func UpdateMetadata(apps []App) error {
 
 // MarkAppAsUnusable marks application as unusable.
 func MarkAppAsUnusable(appId int) error {
-	db, err := openMetadataDB()
+	db, err := OpenMetadataDB()
 	if err != nil {
 		return err
 	}
@@ -90,7 +88,7 @@ func MarkAppAsUnusable(appId int) error {
 
 // MarkAppAsUsable marks application as usable.
 func MarkAppAsUsable(appId int) error {
-	db, err := openMetadataDB()
+	db, err := OpenMetadataDB()
 	if err != nil {
 		return err
 	}
@@ -104,7 +102,7 @@ func MarkAppAsUsable(appId int) error {
 
 // AllUsableApps returns a slice with all usable applications.
 func AllUsableApps() ([]App, error) {
-	db, err := openMetadataDB()
+	db, err := OpenMetadataDB()
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +127,7 @@ func AllUsableApps() ([]App, error) {
 
 // GetName returns name of the specified application.
 func GetName(appId int) (name string, err error) {
-	db, err := openMetadataDB()
+	db, err := OpenMetadataDB()
 	if err != nil {
 		return name, err
 	}
@@ -149,7 +147,7 @@ func GetName(appId int) (name string, err error) {
 }
 
 func Search(query string) (apps []App, err error) {
-	db, err := openMetadataDB()
+	db, err := OpenMetadataDB()
 	if err != nil {
 		return nil, err
 	}
@@ -182,47 +180,4 @@ func Search(query string) (apps []App, err error) {
 	}
 	rows.Close()
 	return apps, nil
-}
-
-// DetectUnusableApps finds applications that have no active users and marks
-// them as unusable.
-func DetectUnusableApps() error {
-	apps, err := AllUsableApps()
-	if err != nil {
-		return err
-	}
-
-	for _, app := range apps {
-		db, err := openAppUsageDB(app.Id)
-		if err != nil {
-			log.Println(app, err)
-			continue
-		}
-
-		rows, err := db.Query("SELECT count(*), avg(count) FROM records")
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		var count int
-		var avg float32
-		rows.Next()
-		err = rows.Scan(&count, &avg)
-		rows.Close()
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		if count > 10 && avg < 1 {
-			err = MarkAppAsUnusable(app.Id)
-			log.Println(fmt.Sprintf("Marked app %s (%d) as unusable", app.Name, app.Id))
-			if err != nil {
-				log.Println(err)
-				continue
-			}
-		}
-
-		db.Close()
-	}
-	return nil
 }

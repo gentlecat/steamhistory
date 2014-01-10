@@ -10,9 +10,9 @@ import (
 	"time"
 )
 
-// openAppUsageDB opens database with usage history for a specified application
+// OpenAppUsageDB opens database with usage history for a specified application
 // and, if successful, returns a reference to it.
-func openAppUsageDB(appId int) (*sql.DB, error) {
+func OpenAppUsageDB(appId int) (*sql.DB, error) {
 	exeloc, err := osext.ExecutableFolder()
 	if err != nil {
 		return nil, err
@@ -41,8 +41,8 @@ func openAppUsageDB(appId int) (*sql.DB, error) {
 
 // MakeUsageRecord adds a record with current numer of users for a specified
 // application.
-func MakeUsageRecord(appId int, userCount int) error {
-	db, err := openAppUsageDB(appId)
+func MakeUsageRecord(appId int, userCount int, currentTime time.Time) error {
+	db, err := OpenAppUsageDB(appId)
 	if err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func MakeUsageRecord(appId int, userCount int) error {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(time.Now().UTC().Unix(), userCount)
+	_, err = stmt.Exec(currentTime.Unix(), userCount)
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func MakeUsageRecord(appId int, userCount int) error {
 // AllUsageHistory returns usage data for specified application as a collection
 // of two integers. First is a time, second - number of users.
 func AllUsageHistory(appId int) (history [][2]int64, err error) {
-	db, err := openAppUsageDB(appId)
+	db, err := OpenAppUsageDB(appId)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func AllUsageHistory(appId int) (history [][2]int64, err error) {
 }
 
 func cleanup(appId int) {
-	db, err := openAppUsageDB(appId)
+	db, err := OpenAppUsageDB(appId)
 	if err != nil {
 		log.Println(err)
 		return
@@ -117,4 +117,29 @@ func HistoryCleanup() error {
 		cleanup(app.Id)
 	}
 	return nil
+}
+
+func GetPeakBetween(start time.Time, end time.Time, appId int) (count int, time time.Time, err error) {
+	db, err := OpenAppUsageDB(appId)
+	if err != nil {
+		return count, time, err
+	}
+	defer db.Close()
+	stmt, err := db.Prepare(`
+		SELECT count, time
+		FROM records
+		WHERE time BETWEEN ? AND ?
+		ORDER BY -count
+		LIMIT 1
+		`)
+	if err != nil {
+		return count, time, err
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(start.Unix(), end.Unix()).Scan(&count, &time)
+	if err != nil {
+		return count, time, err
+	}
+	return count, time, nil
 }

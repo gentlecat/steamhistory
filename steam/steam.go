@@ -8,11 +8,12 @@ import (
 	"github.com/tsukanov/steamhistory/storage"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 // GetUserCount returns current number of users for a specified application.
 func GetUserCount(appId int) (int, error) {
-	url := fmt.Sprintf("http://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=%d", appId)
+	url := "http://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=" + strconv.Itoa(appId)
 	resp, err := http.Get(url)
 	if err != nil {
 		return 0, err
@@ -26,6 +27,7 @@ func GetUserCount(appId int) (int, error) {
 		return 0, err
 	}
 
+	// Types for parsing
 	type response struct {
 		Result       int
 		Player_count int
@@ -38,7 +40,7 @@ func GetUserCount(appId int) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	return respParsed.Response.Player_count, err
+	return respParsed.Response.Player_count, nil
 }
 
 // GetApps returns slice of all application that are available on Steam platform.
@@ -53,6 +55,7 @@ func GetApps() ([]storage.App, error) {
 		return nil, err
 	}
 
+	// Types for parsing
 	type appList struct {
 		Apps []storage.App
 	}
@@ -65,5 +68,5 @@ func GetApps() ([]storage.App, error) {
 	if err != nil {
 		return nil, err
 	}
-	return respParsed.Applist.Apps, err
+	return respParsed.Applist.Apps, nil
 }

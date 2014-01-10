@@ -4,6 +4,7 @@ import (
 	"bitbucket.org/kardianos/osext"
 	"os"
 	"testing"
+	"time"
 )
 
 func removeAllHistory() error {
@@ -21,13 +22,14 @@ func removeAllHistory() error {
 type usageRecordSample struct {
 	AppId     int
 	UserCount int
+	Time      time.Time
 }
 
 func TestRecording(t *testing.T) {
 	removeMetadataDB()
 	removeAllHistory()
 
-	appSamples := []App{
+	sampleApps := []App{
 		{
 			Id:   0,
 			Name: "Hello there",
@@ -49,47 +51,50 @@ func TestRecording(t *testing.T) {
 			Name: "I was worried",
 		},
 	}
-	err := UpdateMetadata(appSamples)
+	err := UpdateMetadata(sampleApps)
 	if err != nil {
 		t.Error(err)
 	}
 
-	// WARNING: Do not make records for the same app. You can't have two records
-	// with the same timestamp.
-	samples := []usageRecordSample{
+	sampleUsage := []usageRecordSample{
 		{
 			AppId:     0,
 			UserCount: 42,
+			Time:      time.Now(),
 		},
 		{
 			AppId:     1,
 			UserCount: 422,
+			Time:      time.Now(),
 		},
 		{
 			AppId:     200,
 			UserCount: 10,
+			Time:      time.Now(),
 		},
 		{
 			AppId:     220,
 			UserCount: 0,
+			Time:      time.Now(),
 		},
 		{
 			AppId:     8000,
 			UserCount: 0,
+			Time:      time.Now(),
 		},
 	}
 
 	// Adding samples
-	for _, sample := range samples {
+	for _, sample := range sampleUsage {
 		// Making usage record
-		err := MakeUsageRecord(sample.AppId, sample.UserCount)
+		err := MakeUsageRecord(sample.AppId, sample.UserCount, sample.Time)
 		if err != nil {
 			t.Error(err)
 		}
 	}
 
 	// Checking if they have been saved
-	for _, sample := range samples {
+	for _, sample := range sampleUsage {
 		history, err := AllUsageHistory(sample.AppId)
 		if err != nil {
 			t.Error(err)
@@ -111,7 +116,7 @@ func TestRecording(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	for _, sample := range samples {
+	for _, sample := range sampleUsage {
 		if sample.UserCount == 0 {
 			history, err := AllUsageHistory(sample.AppId)
 			if err != nil {

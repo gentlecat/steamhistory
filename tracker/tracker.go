@@ -5,6 +5,7 @@ import (
 	"github.com/tsukanov/steamhistory/storage"
 	"log"
 	"sync"
+	"time"
 )
 
 // RecordHistory records current number of users for all usable applications.
@@ -26,7 +27,7 @@ func RecordHistory() error {
 				if err != nil {
 					log.Print(err)
 				}
-				storage.MakeUsageRecord(appId, count)
+				storage.MakeUsageRecord(appId, count, time.Now().UTC())
 			}
 		}(appIdChan, wg)
 	}

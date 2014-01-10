@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/tsukanov/steamhistory/storage"
+	"github.com/tsukanov/steamhistory/storage/analysis"
 	"github.com/tsukanov/steamhistory/tracker"
 	"github.com/tsukanov/steamhistory/webface"
 	"log"
@@ -41,7 +42,7 @@ func main() {
 		log.Println("History cleanup completed!")
 	case "detect-unusable-apps":
 		log.Println("Detecting unusable apps...")
-		err := storage.DetectUnusableApps()
+		err := analysis.DetectUnusableApps()
 		if err != nil {
 			log.Fatal(err)
 		}
