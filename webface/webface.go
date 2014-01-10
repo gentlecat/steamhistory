@@ -112,11 +112,22 @@ func topHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := json.Marshal(rows)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Println(err)
-		return
+	key := "top"
+	it, err := mc.Get(key)
+	var b []byte
+	if err == nil {
+		b = it.Value
+	} else {
+		b, err = json.Marshal(rows)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		err = mc.Set(&memcache.Item{Key: key, Value: b, Expiration: 1800}) // 1800 sec = 30 min
+		if err != nil {
+			log.Println(err)
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
