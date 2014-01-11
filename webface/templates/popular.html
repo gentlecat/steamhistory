@@ -1,13 +1,13 @@
 {{define "head"}}
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
-<link href="/static/top.css" rel="stylesheet">
+<link href="/static/popular.css" rel="stylesheet">
 
 <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
 {{end}}
 
 {{define "content"}}
 <div class="page-header">
-  <h1>Top apps <small>Today</small></h1>
+  <h1>Popular apps <small>Today</small></h1>
 </div>
 
 <div id="loading-msg"><i class="fa fa-spinner fa-spin"></i> Loading...</div>
@@ -33,7 +33,7 @@ function parseRow(key, row) {
 
 $(document).ready(function() {
     // Loading data
-    $.getJSON('/top/daily.json', function (data) {
+    $.getJSON('/popular/daily.json', function (data) {
         $.each(data, function(key, row) {
             $("#top-table").append(parseRow(key, row));
         });

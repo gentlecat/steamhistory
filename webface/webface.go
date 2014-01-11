@@ -45,8 +45,8 @@ func makeRouter() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/", homeHandler)
 	r.HandleFunc("/history/{appid:[0-9]+}.json", historyHandler)
-	r.HandleFunc("/top/", topHandler)
-	r.HandleFunc("/top/daily.json", dailyTopHandler)
+	r.HandleFunc("/popular/", popularHandler)
+	r.HandleFunc("/popular/daily.json", dailyPopularHandler)
 	r.HandleFunc("/search", searchHandler)
 	r.HandleFunc("/about/", aboutHandler)
 	return r
@@ -132,11 +132,11 @@ func historyHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func topHandler(w http.ResponseWriter, r *http.Request) {
-	basicHandler(w, r, "top.html")
+func popularHandler(w http.ResponseWriter, r *http.Request) {
+	basicHandler(w, r, "popular.html")
 }
 
-func dailyTopHandler(w http.ResponseWriter, r *http.Request) {
+func dailyPopularHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := analysis.MostPopularAppsToday()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
