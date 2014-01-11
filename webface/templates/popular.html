@@ -35,7 +35,7 @@ $(document).ready(function() {
     // Loading data
     $.getJSON('/popular/daily.json', function (data) {
         $.each(data, function(key, row) {
-            $("#top-table").append(parseRow(key, row));
+            $("#top-table").append(parseRow(key, row + 1));
         });
         $("#loading-msg").hide("fast");
         $("#top-table").show("fast");
