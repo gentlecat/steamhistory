@@ -22,9 +22,9 @@
 </table>
 
 <script>
-function parseRow(key, row) {
+function parseRow(n, row) {
     var html = $('<tr>');
-    html.append($('<td>' + key + '</td>'))
+    html.append($('<td>' + n + '</td>'))
         .append($('<td><img src="http://cdn.steampowered.com/v/gfx/apps/' + row.app.appid + '/capsule_184x69.jpg" /></td>'))
         .append($('<td><a href="/?apps=' + row.app.appid + '">' + row.app.name + '</a></td>'))
         .append($('<td><abbr title="' + row.peak.time + '">' + row.peak.count + '</abbr></td>'))
@@ -35,7 +35,7 @@ $(document).ready(function() {
     // Loading data
     $.getJSON('/popular/daily.json', function (data) {
         $.each(data, function(key, row) {
-            $("#top-table").append(parseRow(key, row + 1));
+            $("#top-table").append(parseRow(key + 1, row));
         });
         $("#loading-msg").hide("fast");
         $("#top-table").show("fast");
