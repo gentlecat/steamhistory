@@ -17,6 +17,11 @@
 	padding-left: 0;
 }
 
+.select2-container {
+	width: 100% !important;
+	max-width: 300px;
+}
+
 .search-result {
 	clear: both;
 }
