@@ -110,14 +110,16 @@
             $.each(list, function (i, app) {
                 if (findAppIndex(apps, app.id) != -1) {
                     if (list.length > 1) {
-                        $('#apps-list').append(
-                            $('<li>').append("<span style='color:grey'>" +app.id + "</span> <b>" + app.name + "</b> ")
+                        $('#apps-list').append($("<li>")
+                            .append('<span style="color:grey">' + app.id + '</span> <strong><a href="/' + app.id + '">' + app.name + "</a></strong> ")
                             .append($('<i>')
                                 .attr('onclick', 'removeApp(' + app.id + ')')
-                                .attr('onclick', 'removeApp(' + app.id + ')')
-                                .attr('class', 'fa fa-times')));
+                                .attr('title', 'Remove app from the list')
+                                .attr('class', 'fa fa-times')
+                            )
+                        );
                     } else {
-                        $('#apps-list').append($('<li>').append("<span style='color:grey'>" +app.id + "</span> <b>" + app.name + "</b> "));
+                        $('#apps-list').append($('<li>').append('<span style="color:grey">' + app.id + '</span> <strong><a href="/' + app.id + '">' + app.name + "</a></strong>"));
                     }
                 } else {
                     if (app.name != null) {
