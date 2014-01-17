@@ -44,6 +44,11 @@ func DetectUnusableApps() error {
 				log.Println(err)
 				continue
 			}
+			// Removing history
+			err = storage.RemoveAppUsageDB(app.Id)
+			if err != nil {
+				log.Println(err)
+			}
 		}
 
 		db.Close()

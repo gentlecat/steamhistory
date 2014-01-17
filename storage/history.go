@@ -39,6 +39,14 @@ func OpenAppUsageDB(appId int) (*sql.DB, error) {
 	return db, nil
 }
 
+func RemoveAppUsageDB(appId int) error {
+	exeloc, err := osext.ExecutableFolder()
+	if err != nil {
+		return err
+	}
+	return os.Remove(fmt.Sprintf("%susagedata/%d.db", exeloc, appId))
+}
+
 // MakeUsageRecord adds a record with current numer of users for a specified
 // application.
 func MakeUsageRecord(appId int, userCount int, currentTime time.Time) error {
