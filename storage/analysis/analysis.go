@@ -3,6 +3,7 @@ package analysis
 
 import (
 	"fmt"
+	"github.com/tsukanov/steamhistory/steam"
 	"github.com/tsukanov/steamhistory/storage"
 	"log"
 )
@@ -38,7 +39,7 @@ func DetectUnusableApps() error {
 		}
 		if count > 10 && avg < 1 {
 			err = storage.MarkAppAsUnusable(app.Id)
-			log.Println(fmt.Sprintf("Marked app %s (%d) as unusable", app.Name, app.Id))
+			log.Println(fmt.Sprintf("Marked app %s (%d) as unusable.", app.Name, app.Id))
 			if err != nil {
 				log.Println(err)
 				continue
@@ -46,6 +47,31 @@ func DetectUnusableApps() error {
 		}
 
 		db.Close()
+	}
+	return nil
+}
+
+// DetectUsableApps checks if any of the unusable applications become usable.
+func DetectUsableApps() error {
+	apps, err := storage.AllUnusableApps()
+	if err != nil {
+		return err
+	}
+
+	for _, app := range apps {
+		count, err := steam.GetUserCount(app.Id)
+		if err != nil {
+			log.Println(app, err)
+			continue
+		}
+		if count > 5 {
+			err = storage.MarkAppAsUsable(app.Id)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			log.Println(fmt.Sprintf("Marked app %s (%d) as usable.", app.Name, app.Id))
+		}
 	}
 	return nil
 }

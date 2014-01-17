@@ -47,5 +47,12 @@ func main() {
 			log.Fatal(err)
 		}
 		log.Println("Detection completed!")
+	case "detect-usable-apps":
+		log.Println("Detecting usable apps...")
+		err := analysis.DetectUnusableApps()
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println("Detection completed!")
 	}
 }

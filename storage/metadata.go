@@ -126,6 +126,31 @@ func AllUsableApps() ([]App, error) {
 	return apps, nil
 }
 
+// AllUnusableApps returns a slice with all unusable applications.
+func AllUnusableApps() ([]App, error) {
+	db, err := OpenMetadataDB()
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	rows, err := db.Query("SELECT id, name FROM metadata WHERE usable=0")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var apps []App
+	for rows.Next() {
+		var app App
+		err := rows.Scan(&app.Id, &app.Name)
+		if err != nil {
+			return nil, err
+		}
+		apps = append(apps, app)
+	}
+	return apps, nil
+}
+
 // GetName returns name of the specified application.
 func GetName(appId int) (name string, err error) {
 	db, err := OpenMetadataDB()
