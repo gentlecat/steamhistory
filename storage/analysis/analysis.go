@@ -6,6 +6,7 @@ import (
 	"github.com/tsukanov/steamhistory/steam"
 	"github.com/tsukanov/steamhistory/storage"
 	"log"
+	"sync"
 )
 
 // DetectUnusableApps finds applications that have no active users and marks
@@ -63,20 +64,36 @@ func DetectUsableApps() error {
 		return err
 	}
 
-	for _, app := range apps {
-		count, err := steam.GetUserCount(app.Id)
-		if err != nil {
-			log.Println(app, err)
-			continue
-		}
-		if count > 5 {
-			err = storage.MarkAppAsUsable(app.Id)
-			if err != nil {
-				log.Println(err)
-				continue
+	appChan := make(chan storage.App)
+	wg := new(sync.WaitGroup)
+	// Adding goroutines to workgroup
+	for i := 0; i < 200; i++ {
+		wg.Add(1)
+		go func(appChan chan storage.App, wg *sync.WaitGroup) {
+			defer wg.Done() // Decreasing internal counter for wait-group as soon as goroutine finishes
+			for app := range appChan {
+				count, err := steam.GetUserCount(app.Id)
+				if err != nil {
+					log.Println(err)
+					continue
+				}
+				if count > 5 {
+					err = storage.MarkAppAsUsable(app.Id)
+					if err != nil {
+						log.Println(err)
+						continue
+					}
+					log.Println(fmt.Sprintf("Marked app %s (%d) as usable.", app.Name, app.Id))
+				}
 			}
-			log.Println(fmt.Sprintf("Marked app %s (%d) as usable.", app.Name, app.Id))
-		}
+		}(appChan, wg)
 	}
+
+	// Processing all links by spreading them to `free` goroutines
+	for _, app := range apps {
+		appChan <- app
+	}
+	close(appChan) // Closing channel (waiting in goroutines won't continue any more)
+	wg.Wait()      // Waiting for all goroutines to finish
 	return nil
 }
