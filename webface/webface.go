@@ -67,13 +67,13 @@ func basicHandler(w http.ResponseWriter, r *http.Request, file string) {
 		exeloc+"webface/templates/base.html",
 		exeloc+"webface/templates/"+file)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal error.", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
 	err = t.Execute(w, nil)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal error.", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
@@ -83,7 +83,7 @@ func appHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	appId, err := strconv.Atoi(vars["appid"])
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal error.", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
@@ -99,7 +99,7 @@ func appHandler(w http.ResponseWriter, r *http.Request) {
 		exeloc+"webface/templates/base.html",
 		exeloc+"webface/templates/app.html")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal error.", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
@@ -108,7 +108,7 @@ func appHandler(w http.ResponseWriter, r *http.Request) {
 		Name: appName,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal error.", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
@@ -122,7 +122,7 @@ func historyHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	appId, err := strconv.Atoi(vars["appid"])
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal error.", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
@@ -135,13 +135,13 @@ func historyHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		name, err := storage.GetName(appId)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Internal error.", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
 		history, err := storage.AllUsageHistory(appId)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Internal error.", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
@@ -155,7 +155,7 @@ func historyHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		b, err = json.Marshal(result)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Internal error.", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
@@ -175,7 +175,7 @@ func popularHandler(w http.ResponseWriter, r *http.Request) {
 func dailyPopularHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := analysis.MostPopularAppsToday()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal error.", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
@@ -188,7 +188,7 @@ func dailyPopularHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		b, err = json.Marshal(rows)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Internal error.", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
@@ -219,13 +219,13 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		results, err := storage.Search(query[0])
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Internal error.", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
 		b, err = json.Marshal(results)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Internal error.", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
