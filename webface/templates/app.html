@@ -1,0 +1,61 @@
+{{define "head"}}
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+<link href="/static/app.css" rel="stylesheet">
+
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+
+<script src="/static/highstock.js"></script>
+{{end}}
+
+{{define "content"}}
+
+<div id="head">
+    <h1 class="pull-left">{{.Name}} <small>{{.Id}}</small></h1>
+    <div class="btn-group pull-right" style="margin-top:25px;">
+        <a class="btn btn-default" href="http://store.steampowered.com/app/{{.Id}}" role="button">Store Page</a>
+        <a class="btn btn-default" href="http://steamcommunity.com/app/{{.Id}}" role="button">Community Hub</a>
+    </div>
+</div>
+
+<div class="panel panel-info">
+    <div class="panel-heading">Usage history</div>
+    <div id="loading-msg" style="padding:15px;"><i class="fa fa-spinner fa-spin"></i> Loading...</div>
+    <div id="chart" class="panel-body" style="height:300px;"></div>
+</div>
+
+<strong>Additional info:</strong> <a href="http://pcgamingwiki.com/api/appid.php?appid={{.Id}}">PCGamingWiki</a>, <a href="http://steamdb.info/app/{{.Id}}">SteamDB</a>.
+
+<script>
+$(document).ready(function() {
+    // Loading data
+    $.getJSON('/history/{{.Id}}.json', function (data) {
+        $('#loading-msg').hide("fast");
+        $('#chart').highcharts('StockChart', {
+            rangeSelector: {
+                buttons: [
+                { type: 'day', count: 1, text: '1d' },
+                { type: 'week', count: 1, text: '1w' },
+                { type: 'month', count: 1, text: '1m' },
+                { type: 'all', text: 'all' }
+                ],
+                selected: 1
+            },
+
+            xAxis: { type: 'datetime' },
+            yAxis: { min: 0 },
+
+            credits: { enabled: false },
+            exporting: { enabled: false },
+
+            series: [{
+                name: data["name"],
+                data: data["history"],
+                type: 'spline',
+                shadow: true,
+                tooltip: { valueDecimals: 0 }
+            }]
+        });
+    });
+});
+</script>
+{{end}}

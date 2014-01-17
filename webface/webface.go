@@ -42,13 +42,14 @@ func StartDev() {
 }
 
 func makeRouter() *mux.Router {
-	r := mux.NewRouter()
+	r := mux.NewRouter().StrictSlash(true)
 	r.HandleFunc("/", homeHandler)
+	r.HandleFunc("/{appid:[0-9]+}", appHandler)
 	r.HandleFunc("/history/{appid:[0-9]+}.json", historyHandler)
-	r.HandleFunc("/popular/", popularHandler)
+	r.HandleFunc("/popular", popularHandler)
 	r.HandleFunc("/popular/daily.json", dailyPopularHandler)
 	r.HandleFunc("/search", searchHandler)
-	r.HandleFunc("/about/", aboutHandler)
+	r.HandleFunc("/about", aboutHandler)
 	return r
 }
 
@@ -71,6 +72,41 @@ func basicHandler(w http.ResponseWriter, r *http.Request, file string) {
 		return
 	}
 	err = t.Execute(w, nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+}
+
+func appHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	appId, err := strconv.Atoi(vars["appid"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	appName, err := storage.GetName(appId)
+	if err != nil {
+		http.Error(w, "No app with this ID", http.StatusNotFound)
+		return
+	}
+
+	exeloc, err := osext.ExecutableFolder()
+	t, err := template.ParseFiles(
+		exeloc+"webface/templates/base.html",
+		exeloc+"webface/templates/app.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	err = t.Execute(w, storage.App{
+		Id:   appId,
+		Name: appName,
+	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Println(err)

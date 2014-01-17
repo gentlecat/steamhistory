@@ -12,10 +12,9 @@
 
 <div id="loading-msg"><i class="fa fa-spinner fa-spin"></i> Loading...</div>
 
-<table id="top-table" class="table" style="display: none;">
+<table id="top-table" class="table table-hover" style="display: none;">
     <thead><tr>
-        <th>#</th>
-        <th></th>
+        <th style="width:1%">#</th>
         <th>Name</th>
         <th>Peak</th>
     </tr></thead>
@@ -25,8 +24,7 @@
 function parseRow(n, row) {
     var html = $('<tr>');
     html.append($('<td>' + n + '</td>'))
-        .append($('<td><img src="http://cdn.steampowered.com/v/gfx/apps/' + row.app.appid + '/capsule_184x69.jpg" /></td>'))
-        .append($('<td><a href="/?apps=' + row.app.appid + '">' + row.app.name + '</a></td>'))
+        .append($('<td><a href="/' + row.app.appid + '" title="View details">' + row.app.name + '</a> <a href="/?apps=' + row.app.appid + '" title="Compare with other apps"><i class="fa fa-bar-chart-o"></i></a>'))
         .append($('<td><abbr title="' + row.peak.time + '">' + row.peak.count + '</abbr></td>'))
     return html;
 }
