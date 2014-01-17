@@ -49,7 +49,7 @@ func main() {
 		log.Println("Detection completed!")
 	case "detect-usable-apps":
 		log.Println("Detecting usable apps...")
-		err := analysis.DetectUnusableApps()
+		err := analysis.DetectUsableApps()
 		if err != nil {
 			log.Fatal(err)
 		}
