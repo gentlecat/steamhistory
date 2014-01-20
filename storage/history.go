@@ -10,6 +10,10 @@ import (
 	"time"
 )
 
+const (
+	UsageHistoryDirectory = "usagedata" // Directory that contains databases with usage history
+)
+
 // OpenAppUsageDB opens database with usage history for a specified application
 // and, if successful, returns a reference to it.
 func OpenAppUsageDB(appId int) (*sql.DB, error) {
@@ -17,11 +21,11 @@ func OpenAppUsageDB(appId int) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = os.MkdirAll(exeloc+"usagedata", 0774)
+	err = os.MkdirAll(exeloc+UsageHistoryDirectory, 0774)
 	if err != nil {
 		return nil, err
 	}
-	db, err := sql.Open("sqlite3", fmt.Sprintf("%susagedata/%d.db", exeloc, appId))
+	db, err := sql.Open("sqlite3", fmt.Sprintf("%s%s/%d.db", exeloc, UsageHistoryDirectory, appId))
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +48,7 @@ func RemoveAppUsageDB(appId int) error {
 	if err != nil {
 		return err
 	}
-	return os.Remove(fmt.Sprintf("%susagedata/%d.db", exeloc, appId))
+	return os.Remove(fmt.Sprintf("%s%s/%d.db", exeloc, UsageHistoryDirectory, appId))
 }
 
 // MakeUsageRecord adds a record with current numer of users for a specified

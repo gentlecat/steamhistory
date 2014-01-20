@@ -13,6 +13,10 @@ import (
 	"time"
 )
 
+const (
+	MetadataDBName = "app_metadata.db" // Name of the database with metadata about apps
+)
+
 // OpenMetadataDB opens database with metadata about all apps and, if successful,
 // returns a reference to it.
 func OpenMetadataDB() (*sql.DB, error) {
@@ -20,7 +24,7 @@ func OpenMetadataDB() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	db, err := sql.Open("sqlite3", exeloc+"app_metadata.db")
+	db, err := sql.Open("sqlite3", exeloc+MetadataDBName)
 	if err != nil {
 		return nil, err
 	}
