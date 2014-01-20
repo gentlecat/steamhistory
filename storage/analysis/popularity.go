@@ -23,8 +23,8 @@ func (a byPeak) Len() int           { return len(a) }
 func (a byPeak) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a byPeak) Less(i, j int) bool { return a[i].Peak.Count > a[j].Peak.Count }
 
-// MostPopularAppsToday function returns list of apps that had most users today.
-// Excluding Steam Client (0).
+// MostPopularAppsToday function returns list of apps that had most users today
+// (excluding app #0 - Steam Client).
 func MostPopularAppsToday() ([]appRow, error) {
 	apps, err := storage.AllUsableApps()
 	if err != nil {

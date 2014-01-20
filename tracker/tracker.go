@@ -43,6 +43,7 @@ func RecordHistory() error {
 	return nil
 }
 
+// UpdateMetadata updates metadata for all applications, adds missing applications.
 func UpdateMetadata() error {
 	apps, err := steam.GetApps()
 	if err != nil {

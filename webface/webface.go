@@ -35,7 +35,7 @@ func Start() {
 	fcgi.Serve(l, makeRouter())
 }
 
-// StartDev starts a development server at localhost:8080
+// StartDev starts development server at localhost:8080
 func StartDev() {
 	log.Println("Starting development server (localhost:8080)...")
 	http.ListenAndServe(":8080", makeRouter())

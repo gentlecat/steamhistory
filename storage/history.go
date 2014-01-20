@@ -43,6 +43,7 @@ func OpenAppUsageDB(appId int) (*sql.DB, error) {
 	return db, nil
 }
 
+// RemoveAppUsageDB removes database with usage history for a specified application.
 func RemoveAppUsageDB(appId int) error {
 	exeloc, err := osext.ExecutableFolder()
 	if err != nil {
@@ -131,6 +132,8 @@ func HistoryCleanup() error {
 	return nil
 }
 
+// GetPeakBetween returns peak and it's time for a specified application
+// in between specified time period.
 func GetPeakBetween(start time.Time, end time.Time, appId int) (count int, time time.Time, err error) {
 	db, err := OpenAppUsageDB(appId)
 	if err != nil {
