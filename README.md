@@ -1,2 +1,2 @@
 # [Steam History](http://steamhistory.com/) [![Build Status](https://api.travis-ci.org/tsukanov/steamhistory.png)](https://travis-ci.org/tsukanov/steamhistory) [![Coverage Status](https://coveralls.io/repos/tsukanov/steamhistory/badge.png)](https://coveralls.io/r/tsukanov/steamhistory)
-Application usage history recorder. You can read [introduction](http://blog.tsukanov.me/recording-app-usage-on-steam/) in my blog.
+Application usage history recorder. You can read [introduction](http://blog.tsukanov.me/tracking-steam/) in my blog.
