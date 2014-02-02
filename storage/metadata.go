@@ -176,6 +176,8 @@ func GetName(appId int) (name string, err error) {
 	return name, nil
 }
 
+// Search function finds applications that have name simmilar to one that is
+// specified in a query. It's case insensitive. Returns at most 10 results.
 func Search(query string) (apps []App, err error) {
 	db, err := OpenMetadataDB()
 	if err != nil {
