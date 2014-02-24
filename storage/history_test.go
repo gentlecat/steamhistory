@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"bitbucket.org/kardianos/osext"
+	"github.com/tsukanov/steamhistory/steam"
 )
 
 func removeAllHistory() error {
@@ -30,7 +31,7 @@ func TestRecording(t *testing.T) {
 	removeMetadataDB()
 	removeAllHistory()
 
-	sampleApps := []App{
+	sampleApps := []steam.App{
 		{
 			ID:   0,
 			Name: "Hello there",

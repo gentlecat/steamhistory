@@ -5,11 +5,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/tsukanov/steamhistory/steam"
 	"github.com/tsukanov/steamhistory/storage"
 )
 
 func TestMostPopularAppsToday(t *testing.T) {
-	sampleApps := []storage.App{
+	sampleApps := []steam.App{
 		{
 			ID:   0,
 			Name: "Team Fortress",
