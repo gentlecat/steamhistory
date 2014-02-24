@@ -2,23 +2,24 @@ package analysis
 
 import (
 	"fmt"
-	"github.com/tsukanov/steamhistory/storage"
 	"testing"
 	"time"
+
+	"github.com/tsukanov/steamhistory/storage"
 )
 
 func TestMostPopularAppsToday(t *testing.T) {
 	sampleApps := []storage.App{
 		{
-			Id:   0,
+			ID:   0,
 			Name: "Team Fortress",
 		},
 		{
-			Id:   1,
+			ID:   1,
 			Name: "Dota 2",
 		},
 		{
-			Id:   3,
+			ID:   3,
 			Name: "Half-Life 3",
 		},
 	}
@@ -27,29 +28,29 @@ func TestMostPopularAppsToday(t *testing.T) {
 		t.Error(err)
 	}
 	type usageRecordSample struct {
-		AppId     int
+		AppID     int
 		UserCount int
 		Time      time.Time
 	}
 	sampleUsage := []usageRecordSample{
 		{
-			AppId:     0,
+			AppID:     0,
 			UserCount: 200,
 			Time:      time.Now().UTC().Add(-time.Hour),
 		},
 		{
-			AppId:     1,
+			AppID:     1,
 			UserCount: 500,
 			Time:      time.Now().UTC().Add(-time.Hour),
 		},
 		{
-			AppId:     3,
+			AppID:     3,
 			UserCount: 350,
 			Time:      time.Now().UTC().Add(-time.Hour),
 		},
 	}
 	for _, sample := range sampleUsage {
-		err := storage.MakeUsageRecord(sample.AppId, sample.UserCount, sample.Time)
+		err := storage.MakeUsageRecord(sample.AppID, sample.UserCount, sample.Time)
 		if err != nil {
 			t.Error(err)
 		}

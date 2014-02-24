@@ -25,19 +25,19 @@ func TestMetadataUpdate(t *testing.T) {
 
 	samples := []steam.App{
 		{
-			Id:   0,
+			ID:   0,
 			Name: "Steam?!",
 		},
 		{
-			Id:   1,
+			ID:   1,
 			Name: "Client?!",
 		},
 		{
-			Id:   2,
+			ID:   2,
 			Name: "Yes it is",
 		},
 		{
-			Id:   3,
+			ID:   3,
 			Name: "Half-Life 3",
 		},
 	}
@@ -59,7 +59,7 @@ func TestMetadataUpdate(t *testing.T) {
 		}
 		found := false
 		for _, app := range apps {
-			if app.Id == sample.Id && app.Name == sample.Name {
+			if app.ID == sample.ID && app.Name == sample.Name {
 				found = true
 				break
 			}
@@ -71,7 +71,7 @@ func TestMetadataUpdate(t *testing.T) {
 
 	// Testing GetName function
 	for _, sample := range samples {
-		name, err := GetName(sample.Id)
+		name, err := GetName(sample.ID)
 		if err != nil {
 			t.Error(err)
 		}
@@ -83,7 +83,7 @@ func TestMetadataUpdate(t *testing.T) {
 	// Testing marking app as usable and unusable
 	// MarkAppAsUnusable function
 	for _, sample := range samples {
-		err := MarkAppAsUnusable(sample.Id)
+		err := MarkAppAsUnusable(sample.ID)
 		if err != nil {
 			t.Error(err)
 		}
@@ -98,7 +98,7 @@ func TestMetadataUpdate(t *testing.T) {
 	}
 	// MarkAppAsUsable function
 	for _, sample := range samples {
-		err := MarkAppAsUsable(sample.Id)
+		err := MarkAppAsUsable(sample.ID)
 		if err != nil {
 			t.Error(err)
 		}

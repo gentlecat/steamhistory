@@ -21,7 +21,7 @@ func removeAllHistory() error {
 }
 
 type usageRecordSample struct {
-	AppId     int
+	AppID     int
 	UserCount int
 	Time      time.Time
 }
@@ -32,23 +32,23 @@ func TestRecording(t *testing.T) {
 
 	sampleApps := []App{
 		{
-			Id:   0,
+			ID:   0,
 			Name: "Hello there",
 		},
 		{
-			Id:   1,
+			ID:   1,
 			Name: "How are you",
 		},
 		{
-			Id:   200,
+			ID:   200,
 			Name: "I'm okay",
 		},
 		{
-			Id:   220,
+			ID:   220,
 			Name: "Good",
 		},
 		{
-			Id:   8000,
+			ID:   8000,
 			Name: "I was worried",
 		},
 	}
@@ -59,27 +59,27 @@ func TestRecording(t *testing.T) {
 
 	sampleUsage := []usageRecordSample{
 		{
-			AppId:     0,
+			AppID:     0,
 			UserCount: 42,
 			Time:      time.Now(),
 		},
 		{
-			AppId:     1,
+			AppID:     1,
 			UserCount: 422,
 			Time:      time.Now(),
 		},
 		{
-			AppId:     200,
+			AppID:     200,
 			UserCount: 10,
 			Time:      time.Now(),
 		},
 		{
-			AppId:     220,
+			AppID:     220,
 			UserCount: 0,
 			Time:      time.Now(),
 		},
 		{
-			AppId:     8000,
+			AppID:     8000,
 			UserCount: 0,
 			Time:      time.Now(),
 		},
@@ -88,7 +88,7 @@ func TestRecording(t *testing.T) {
 	// Adding samples
 	for _, sample := range sampleUsage {
 		// Making usage record
-		err := MakeUsageRecord(sample.AppId, sample.UserCount, sample.Time)
+		err := MakeUsageRecord(sample.AppID, sample.UserCount, sample.Time)
 		if err != nil {
 			t.Error(err)
 		}
@@ -96,7 +96,7 @@ func TestRecording(t *testing.T) {
 
 	// Checking if they have been saved
 	for _, sample := range sampleUsage {
-		history, err := AllUsageHistory(sample.AppId)
+		history, err := AllUsageHistory(sample.AppID)
 		if err != nil {
 			t.Error(err)
 		}
@@ -119,7 +119,7 @@ func TestRecording(t *testing.T) {
 	}
 	for _, sample := range sampleUsage {
 		if sample.UserCount == 0 {
-			history, err := AllUsageHistory(sample.AppId)
+			history, err := AllUsageHistory(sample.AppID)
 			if err != nil {
 				t.Error(err)
 			}
