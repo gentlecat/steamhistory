@@ -5,15 +5,21 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/tsukanov/steamhistory/storage"
 	"io/ioutil"
 	"net/http"
 	"strconv"
+
+	"github.com/tsukanov/steamhistory/storage"
+)
+
+const (
+	scheme = "https" // https or http
+	host   = "api.steampowered.com"
 )
 
 // GetUserCount returns current number of users for a specified application.
-func GetUserCount(appId int) (int, error) {
-	url := "http://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=" + strconv.Itoa(appId)
+func GetUserCount(appID int) (int, error) {
+	url := scheme + "://" + host + "/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=" + strconv.Itoa(appID)
 	resp, err := http.Get(url)
 	if err != nil {
 		return 0, err
@@ -45,7 +51,7 @@ func GetUserCount(appId int) (int, error) {
 
 // GetApps returns slice of all application that are available on Steam platform.
 func GetApps() ([]storage.App, error) {
-	resp, err := http.Get("http://api.steampowered.com/ISteamApps/GetAppList/v2/")
+	resp, err := http.Get(scheme + "://" + host + "/ISteamApps/GetAppList/v2/")
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +65,6 @@ func GetApps() ([]storage.App, error) {
 	type appList struct {
 		Apps []storage.App
 	}
-
 	type jason struct {
 		Applist appList
 	}
