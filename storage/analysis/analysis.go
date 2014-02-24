@@ -3,10 +3,11 @@ package analysis
 
 import (
 	"fmt"
-	"github.com/tsukanov/steamhistory/steam"
-	"github.com/tsukanov/steamhistory/storage"
 	"log"
 	"sync"
+
+	"github.com/tsukanov/steamhistory/steam"
+	"github.com/tsukanov/steamhistory/storage"
 )
 
 // DetectUnusableApps finds applications that have no active users and marks
@@ -18,7 +19,7 @@ func DetectUnusableApps() error {
 	}
 
 	for _, app := range apps {
-		db, err := storage.OpenAppUsageDB(app.Id)
+		db, err := storage.OpenAppUsageDB(app.ID)
 		if err != nil {
 			log.Println(app, err)
 			continue
@@ -39,14 +40,14 @@ func DetectUnusableApps() error {
 			continue
 		}
 		if count > 10 && avg < 1 {
-			err = storage.MarkAppAsUnusable(app.Id)
-			log.Println(fmt.Sprintf("Marked app %s (%d) as unusable.", app.Name, app.Id))
+			err = storage.MarkAppAsUnusable(app.ID)
+			log.Println(fmt.Sprintf("Marked app %s (%d) as unusable.", app.Name, app.ID))
 			if err != nil {
 				log.Println(err)
 				continue
 			}
 			// Removing history
-			err = storage.RemoveAppUsageDB(app.Id)
+			err = storage.RemoveAppUsageDB(app.ID)
 			if err != nil {
 				log.Println(err)
 			}
@@ -64,26 +65,26 @@ func DetectUsableApps() error {
 		return err
 	}
 
-	appChan := make(chan storage.App)
+	appChan := make(chan steam.App)
 	wg := new(sync.WaitGroup)
 	// Adding goroutines to workgroup
 	for i := 0; i < 200; i++ {
 		wg.Add(1)
-		go func(appChan chan storage.App, wg *sync.WaitGroup) {
+		go func(appChan chan steam.App, wg *sync.WaitGroup) {
 			defer wg.Done() // Decreasing internal counter for wait-group as soon as goroutine finishes
 			for app := range appChan {
-				count, err := steam.GetUserCount(app.Id)
+				count, err := steam.GetUserCount(app.ID)
 				if err != nil {
 					log.Println(err)
 					continue
 				}
 				if count > 5 {
-					err = storage.MarkAppAsUsable(app.Id)
+					err = storage.MarkAppAsUsable(app.ID)
 					if err != nil {
 						log.Println(err)
 						continue
 					}
-					log.Println(fmt.Sprintf("Marked app %s (%d) as usable.", app.Name, app.Id))
+					log.Println(fmt.Sprintf("Marked app %s (%d) as usable.", app.Name, app.ID))
 				}
 			}
 		}(appChan, wg)

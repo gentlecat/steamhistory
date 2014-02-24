@@ -1,9 +1,11 @@
 package storage
 
 import (
-	"bitbucket.org/kardianos/osext"
 	"os"
 	"testing"
+
+	"bitbucket.org/kardianos/osext"
+	"github.com/tsukanov/steamhistory/steam"
 )
 
 func removeMetadataDB() error {
@@ -21,7 +23,7 @@ func removeMetadataDB() error {
 func TestMetadataUpdate(t *testing.T) {
 	removeMetadataDB()
 
-	samples := []App{
+	samples := []steam.App{
 		{
 			Id:   0,
 			Name: "Steam?!",

@@ -9,20 +9,22 @@ Web server must serve static files!
 package webface
 
 import (
-	"bitbucket.org/kardianos/osext"
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
-	"github.com/bradfitz/gomemcache/memcache"
-	"github.com/gorilla/mux"
-	"github.com/tsukanov/steamhistory/storage"
-	"github.com/tsukanov/steamhistory/storage/analysis"
 	"html/template"
 	"log"
 	"net"
 	"net/http"
 	"net/http/fcgi"
 	"strconv"
+
+	"bitbucket.org/kardianos/osext"
+	"github.com/bradfitz/gomemcache/memcache"
+	"github.com/gorilla/mux"
+	"github.com/tsukanov/steamhistory/steam"
+	"github.com/tsukanov/steamhistory/storage"
+	"github.com/tsukanov/steamhistory/storage/analysis"
 )
 
 // Start starts FastCGI server at 127.0.0.1:9000
@@ -103,8 +105,8 @@ func appHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	err = t.Execute(w, storage.App{
-		Id:   appId,
+	err = t.Execute(w, steam.App{
+		ID:   appId,
 		Name: appName,
 	})
 	if err != nil {

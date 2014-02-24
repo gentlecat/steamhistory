@@ -1,22 +1,23 @@
 package storage
 
 import (
-	"bitbucket.org/kardianos/osext"
 	"database/sql"
 	"fmt"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"os"
 	"time"
+
+	"bitbucket.org/kardianos/osext"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 const (
-	UsageHistoryDirectory = "usagedata" // Directory that contains databases with usage history
+	UsageHistoryDirectory = "usagedata" // Directory which contains databases with usage history.
 )
 
 // OpenAppUsageDB opens database with usage history for a specified application
 // and, if successful, returns a reference to it.
-func OpenAppUsageDB(appId int) (*sql.DB, error) {
+func OpenAppUsageDB(appID int) (*sql.DB, error) {
 	exeloc, err := osext.ExecutableFolder()
 	if err != nil {
 		return nil, err
@@ -25,7 +26,7 @@ func OpenAppUsageDB(appId int) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	db, err := sql.Open("sqlite3", fmt.Sprintf("%s%s/%d.db", exeloc, UsageHistoryDirectory, appId))
+	db, err := sql.Open("sqlite3", fmt.Sprintf("%s%s/%d.db", exeloc, UsageHistoryDirectory, appID))
 	if err != nil {
 		return nil, err
 	}
@@ -44,18 +45,18 @@ func OpenAppUsageDB(appId int) (*sql.DB, error) {
 }
 
 // RemoveAppUsageDB removes database with usage history for a specified application.
-func RemoveAppUsageDB(appId int) error {
+func RemoveAppUsageDB(appID int) error {
 	exeloc, err := osext.ExecutableFolder()
 	if err != nil {
 		return err
 	}
-	return os.Remove(fmt.Sprintf("%s%s/%d.db", exeloc, UsageHistoryDirectory, appId))
+	return os.Remove(fmt.Sprintf("%s%s/%d.db", exeloc, UsageHistoryDirectory, appID))
 }
 
 // MakeUsageRecord adds a record with current numer of users for a specified
 // application.
-func MakeUsageRecord(appId int, userCount int, currentTime time.Time) error {
-	db, err := OpenAppUsageDB(appId)
+func MakeUsageRecord(appID int, userCount int, currentTime time.Time) error {
+	db, err := OpenAppUsageDB(appID)
 	if err != nil {
 		return err
 	}
@@ -79,8 +80,8 @@ func MakeUsageRecord(appId int, userCount int, currentTime time.Time) error {
 
 // AllUsageHistory returns usage data for specified application as a collection
 // of two integers. First is a time, second - number of users.
-func AllUsageHistory(appId int) (history [][2]int64, err error) {
-	db, err := OpenAppUsageDB(appId)
+func AllUsageHistory(appID int) (history [][2]int64, err error) {
+	db, err := OpenAppUsageDB(appID)
 	if err != nil {
 		return nil, err
 	}
@@ -105,8 +106,8 @@ func AllUsageHistory(appId int) (history [][2]int64, err error) {
 	return history, nil
 }
 
-func cleanup(appId int) {
-	db, err := OpenAppUsageDB(appId)
+func cleanup(appID int) {
+	db, err := OpenAppUsageDB(appID)
 	if err != nil {
 		log.Println(err)
 		return
@@ -127,15 +128,15 @@ func HistoryCleanup() error {
 		return err
 	}
 	for _, app := range apps {
-		cleanup(app.Id)
+		cleanup(app.ID)
 	}
 	return nil
 }
 
 // GetPeakBetween returns peak and it's time for a specified application
 // in between specified time period.
-func GetPeakBetween(start time.Time, end time.Time, appId int) (count int, time time.Time, err error) {
-	db, err := OpenAppUsageDB(appId)
+func GetPeakBetween(start time.Time, end time.Time, appID int) (count int, time time.Time, err error) {
+	db, err := OpenAppUsageDB(appID)
 	if err != nil {
 		return count, time, err
 	}

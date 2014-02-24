@@ -1,8 +1,9 @@
 package tracker
 
 import (
-	"github.com/tsukanov/steamhistory/storage"
 	"testing"
+
+	"github.com/tsukanov/steamhistory/storage"
 )
 
 func TestMetadataUpdate(t *testing.T) {

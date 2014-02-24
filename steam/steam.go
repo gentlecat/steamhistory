@@ -8,8 +8,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-
-	"github.com/tsukanov/steamhistory/storage"
 )
 
 const (
@@ -49,8 +47,13 @@ func GetUserCount(appID int) (int, error) {
 	return respParsed.Response.Player_count, nil
 }
 
+type App struct {
+	ID   int    `json:"appid"`
+	Name string `json:"name"`
+}
+
 // GetApps returns slice of all application that are available on Steam platform.
-func GetApps() ([]storage.App, error) {
+func GetApps() ([]App, error) {
 	resp, err := http.Get(scheme + "://" + host + "/ISteamApps/GetAppList/v2/")
 	if err != nil {
 		return nil, err
@@ -63,7 +66,7 @@ func GetApps() ([]storage.App, error) {
 
 	// Types for parsing
 	type appList struct {
-		Apps []storage.App
+		Apps []App
 	}
 	type jason struct {
 		Applist appList

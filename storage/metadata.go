@@ -7,10 +7,12 @@ Storage system consists of multiple SQLite databases:
 package storage
 
 import (
-	"bitbucket.org/kardianos/osext"
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"time"
+
+	"bitbucket.org/kardianos/osext"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/tsukanov/steamhistory/steam"
 )
 
 const (
@@ -43,13 +45,8 @@ func OpenMetadataDB() (*sql.DB, error) {
 	return db, nil
 }
 
-type App struct {
-	Id   int    `json:"appid"`
-	Name string `json:"name"`
-}
-
 // UpdateMetadata updates metadata about application or creates a new record.
-func UpdateMetadata(apps []App) error {
+func UpdateMetadata(apps []steam.App) error {
 	db, err := OpenMetadataDB()
 	if err != nil {
 		return err
@@ -68,7 +65,7 @@ func UpdateMetadata(apps []App) error {
 	}
 	defer stmt.Close()
 	for i := range apps {
-		_, err = stmt.Exec(apps[i].Id, apps[i].Id, apps[i].Name, time.Now().UTC().Unix())
+		_, err = stmt.Exec(apps[i].ID, apps[i].ID, apps[i].Name, time.Now().UTC().Unix())
 		if err != nil {
 			return err
 		}
@@ -106,7 +103,7 @@ func MarkAppAsUsable(appId int) error {
 }
 
 // AllUsableApps returns a slice with all usable applications.
-func AllUsableApps() ([]App, error) {
+func AllUsableApps() ([]steam.App, error) {
 	db, err := OpenMetadataDB()
 	if err != nil {
 		return nil, err
@@ -118,10 +115,10 @@ func AllUsableApps() ([]App, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	var apps []App
+	var apps []steam.App
 	for rows.Next() {
-		var app App
-		err := rows.Scan(&app.Id, &app.Name)
+		var app steam.App
+		err := rows.Scan(&app.ID, &app.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -131,7 +128,7 @@ func AllUsableApps() ([]App, error) {
 }
 
 // AllUnusableApps returns a slice with all unusable applications.
-func AllUnusableApps() ([]App, error) {
+func AllUnusableApps() ([]steam.App, error) {
 	db, err := OpenMetadataDB()
 	if err != nil {
 		return nil, err
@@ -143,10 +140,10 @@ func AllUnusableApps() ([]App, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	var apps []App
+	var apps []steam.App
 	for rows.Next() {
-		var app App
-		err := rows.Scan(&app.Id, &app.Name)
+		var app steam.App
+		err := rows.Scan(&app.ID, &app.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -178,7 +175,7 @@ func GetName(appId int) (name string, err error) {
 
 // Search function finds applications that have name simmilar to one that is
 // specified in a query. It's case insensitive. Returns at most 10 results.
-func Search(query string) (apps []App, err error) {
+func Search(query string) (apps []steam.App, err error) {
 	db, err := OpenMetadataDB()
 	if err != nil {
 		return nil, err
@@ -203,8 +200,8 @@ func Search(query string) (apps []App, err error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var app App
-		err := rows.Scan(&app.Id, &app.Name)
+		var app steam.App
+		err := rows.Scan(&app.ID, &app.Name)
 		if err != nil {
 			return nil, err
 		}

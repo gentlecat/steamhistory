@@ -1,10 +1,11 @@
 package storage
 
 import (
-	"bitbucket.org/kardianos/osext"
 	"os"
 	"testing"
 	"time"
+
+	"bitbucket.org/kardianos/osext"
 )
 
 func removeAllHistory() error {

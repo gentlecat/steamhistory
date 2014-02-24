@@ -3,11 +3,12 @@
 package tracker
 
 import (
-	"github.com/tsukanov/steamhistory/steam"
-	"github.com/tsukanov/steamhistory/storage"
 	"log"
 	"sync"
 	"time"
+
+	"github.com/tsukanov/steamhistory/steam"
+	"github.com/tsukanov/steamhistory/storage"
 )
 
 // RecordHistory records current number of users for all usable applications.
@@ -17,28 +18,28 @@ func RecordHistory() error {
 		return err
 	}
 
-	appIdChan := make(chan int)
+	appIDChan := make(chan int)
 	wg := new(sync.WaitGroup)
 	// Adding goroutines to workgroup
 	for i := 0; i < 200; i++ {
 		wg.Add(1)
-		go func(appIdChan chan int, wg *sync.WaitGroup) {
+		go func(appIDChan chan int, wg *sync.WaitGroup) {
 			defer wg.Done() // Decreasing internal counter for wait-group as soon as goroutine finishes
-			for appId := range appIdChan {
-				count, err := steam.GetUserCount(appId)
+			for appID := range appIDChan {
+				count, err := steam.GetUserCount(appID)
 				if err != nil {
 					log.Print(err)
 				}
-				storage.MakeUsageRecord(appId, count, time.Now().UTC())
+				storage.MakeUsageRecord(appID, count, time.Now().UTC())
 			}
-		}(appIdChan, wg)
+		}(appIDChan, wg)
 	}
 
 	// Processing all links by spreading them to `free` goroutines
 	for _, app := range apps {
-		appIdChan <- app.Id
+		appIDChan <- app.ID
 	}
-	close(appIdChan) // Closing channel (waiting in goroutines won't continue any more)
+	close(appIDChan) // Closing channel (waiting in goroutines won't continue any more)
 	wg.Wait()        // Waiting for all goroutines to finish
 	return nil
 }
