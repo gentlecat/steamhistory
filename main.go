@@ -16,12 +16,13 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/tsukanov/steamhistory/storage"
 	"github.com/tsukanov/steamhistory/storage/analysis"
 	"github.com/tsukanov/steamhistory/tracker"
 	"github.com/tsukanov/steamhistory/webface"
-	"log"
-	"os"
 )
 
 func main() {
