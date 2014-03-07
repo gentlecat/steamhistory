@@ -81,7 +81,6 @@
                     name: data["name"],
                     data: data["history"],
                     type: 'spline',
-                    shadow: true,
                     tooltip: { valueDecimals: 0 }
                 });
                 updateChart();
@@ -160,7 +159,12 @@
                 credits: { enabled: false },
                 exporting: { enabled: false },
 
-                series: apps
+                series: apps,
+
+                plotOptions: {
+                    marker: { enabled: false },
+                    shadow: false,
+                }
             });
         }
 
