@@ -30,7 +30,7 @@
 <script>
 $(document).ready(function() {
     // Loading data
-    $.getJSON('/history/{{.Id}}.json', function (data) {
+    $.getJSON('/history/{{.ID}}.json', function (data) {
         $('#loading-msg').hide("fast");
         $('#chart').highcharts('StockChart', {
             rangeSelector: {
