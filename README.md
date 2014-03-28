@@ -30,3 +30,7 @@ Some apps returned by Steam Web API cannot be run in Steam Client. That means th
 ### Web interface
 
 All history can be viewed in a nice web interface. Data display is based on Highcharts library. It is possible to compare usage history of multiple apps at the same time. You can try browsing this data yourself at http://steamhistory.com/. I’ve been collecting it since September 2013. Enjoy!
+
+## Developers
+
+See https://github.com/tsukanov/steamhistory/wiki/Steam-History-API.
