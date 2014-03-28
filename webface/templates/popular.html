@@ -33,7 +33,7 @@ function parseRow(n, row) {
 
 $(document).ready(function() {
     // Loading data
-    $.getJSON('/apps/popular/', function (data) {
+    $.getJSON('/api/apps/popular/', function (data) {
         $.each(data, function(key, row) {
             $("#top-table").append(parseRow(key + 1, row));
         });
