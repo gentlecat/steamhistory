@@ -50,7 +50,6 @@ func makeRouter() *mux.Router {
 	r.HandleFunc("/", homeHandler)
 	r.HandleFunc("/{appid:[0-9]+}", appHandler)
 	r.HandleFunc("/popular", popularHandler)
-	r.HandleFunc("/about", aboutHandler)
 
 	// API
 	api := r.PathPrefix("/api").Subrouter().StrictSlash(true)
