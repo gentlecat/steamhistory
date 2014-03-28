@@ -40,7 +40,7 @@
             placeholder: "Add application",
             minimumInputLength: 1,
             ajax: { 
-                url: "/search",
+                url: "/api/apps/",
                 dataType: 'json',
                 data: function (term, page) { return { q: term }; },
                 results: function (data, page) { return {results: data}; }
@@ -74,7 +74,7 @@
                     updateAppsList();
 
             // Loading data
-            $.getJSON('/history/' + appId + '.json', function (data) {
+            $.getJSON('/api/history/' + appId, function (data) {
                 if (findAppIndex(list, appId) == -1) return; // Checking if still exists
                 apps.push({
                     id: appId,

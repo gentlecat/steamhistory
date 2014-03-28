@@ -45,13 +45,19 @@ func StartDev() {
 
 func makeRouter() *mux.Router {
 	r := mux.NewRouter().StrictSlash(true)
+
+	// Web UI
 	r.HandleFunc("/", homeHandler)
 	r.HandleFunc("/{appid:[0-9]+}", appHandler)
-	r.HandleFunc("/history/{appid:[0-9]+}.json", historyHandler)
 	r.HandleFunc("/popular", popularHandler)
-	r.HandleFunc("/popular/daily.json", dailyPopularHandler)
-	r.HandleFunc("/search", searchHandler)
 	r.HandleFunc("/about", aboutHandler)
+
+	// API
+	api := r.PathPrefix("/api").Subrouter().StrictSlash(true)
+	api.HandleFunc("/apps", appsHandler)
+	api.HandleFunc("/apps/popular", dailyPopularHandler)
+	api.HandleFunc("/history/{appid:[0-9]+}", historyHandler)
+
 	return r
 }
 
@@ -204,10 +210,11 @@ func dailyPopularHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func searchHandler(w http.ResponseWriter, r *http.Request) {
+func appsHandler(w http.ResponseWriter, r *http.Request) {
 	queries := r.URL.Query()
 	query, ok := queries["q"]
 	if !ok {
+		// TODO: Return all apps
 		http.Error(w, "No query", http.StatusBadRequest)
 		return
 	}
