@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	scheme = "https" // https or http
+	scheme = "http" // https or http
 	host   = "api.steampowered.com"
 )
 
