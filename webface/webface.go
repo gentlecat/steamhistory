@@ -22,9 +22,10 @@ import (
 	"bitbucket.org/kardianos/osext"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/gorilla/mux"
+	"github.com/tsukanov/steamhistory/analysis"
+	"github.com/tsukanov/steamhistory/apps"
 	"github.com/tsukanov/steamhistory/steam"
-	"github.com/tsukanov/steamhistory/storage"
-	"github.com/tsukanov/steamhistory/storage/analysis"
+	"github.com/tsukanov/steamhistory/usage"
 )
 
 // Start starts FastCGI server at 127.0.0.1:9000
@@ -95,7 +96,7 @@ func appHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appName, err := storage.GetName(appId)
+	appName, err := apps.GetName(appId)
 	if err != nil {
 		http.Error(w, "No app with this ID", http.StatusNotFound)
 		return
@@ -140,13 +141,13 @@ func historyHandler(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		b = it.Value
 	} else {
-		name, err := storage.GetName(appId)
+		name, err := apps.GetName(appId)
 		if err != nil {
 			http.Error(w, "Internal error.", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
-		history, err := storage.AllUsageHistory(appId)
+		history, err := usage.AllUsageHistory(appId)
 		if err != nil {
 			http.Error(w, "Internal error.", http.StatusInternalServerError)
 			log.Println(err)
@@ -225,7 +226,7 @@ func appsHandler(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		b = it.Value
 	} else {
-		results, err := storage.Search(query[0])
+		results, err := apps.Search(query[0])
 		if err != nil {
 			http.Error(w, "Internal error.", http.StatusInternalServerError)
 			log.Println(err)

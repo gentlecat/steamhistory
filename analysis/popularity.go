@@ -5,8 +5,9 @@ import (
 	"sort"
 	"time"
 
+	"github.com/tsukanov/steamhistory/apps"
 	"github.com/tsukanov/steamhistory/steam"
-	"github.com/tsukanov/steamhistory/storage"
+	"github.com/tsukanov/steamhistory/usage"
 )
 
 type peak struct {
@@ -28,7 +29,7 @@ func (a byPeak) Less(i, j int) bool { return a[i].Peak.Count > a[j].Peak.Count }
 // MostPopularAppsToday function returns list of apps that had most users today
 // (excluding app #0 - Steam Client).
 func MostPopularAppsToday() ([]appRow, error) {
-	apps, err := storage.AllUsableApps()
+	apps, err := apps.AllUsableApps()
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +41,7 @@ func MostPopularAppsToday() ([]appRow, error) {
 		if app.ID == 0 {
 			continue
 		}
-		count, tim, err := storage.GetPeakBetween(yesterday, now, app.ID)
+		count, tim, err := usage.GetPeakBetween(yesterday, now, app.ID)
 		if err != nil {
 			switch {
 			case err == sql.ErrNoRows:

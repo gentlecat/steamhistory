@@ -1,4 +1,4 @@
-package storage
+package usage
 
 import (
 	"os"
@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"bitbucket.org/kardianos/osext"
+	"github.com/tsukanov/steamhistory/apps"
 	"github.com/tsukanov/steamhistory/steam"
 )
 
@@ -28,7 +29,6 @@ type usageRecordSample struct {
 }
 
 func TestRecording(t *testing.T) {
-	removeMetadataDB()
 	removeAllHistory()
 
 	sampleApps := []steam.App{
@@ -53,7 +53,7 @@ func TestRecording(t *testing.T) {
 			Name: "I was worried",
 		},
 	}
-	err := UpdateMetadata(sampleApps)
+	err := apps.SaveMetadata(sampleApps)
 	if err != nil {
 		t.Error(err)
 	}

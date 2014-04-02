@@ -1,4 +1,4 @@
-package storage
+package apps
 
 import (
 	"os"
@@ -20,7 +20,7 @@ func removeMetadataDB() error {
 	return nil
 }
 
-func TestMetadataUpdate(t *testing.T) {
+func TestMetadataSave(t *testing.T) {
 	removeMetadataDB()
 
 	samples := []steam.App{
@@ -43,7 +43,7 @@ func TestMetadataUpdate(t *testing.T) {
 	}
 
 	// Updating (actually adding)
-	err := UpdateMetadata(samples)
+	err := SaveMetadata(samples)
 	if err != nil {
 		t.Error(err)
 	}
@@ -110,5 +110,27 @@ func TestMetadataUpdate(t *testing.T) {
 	}
 	if len(apps) != len(samples) {
 		t.Error("Did not mark all apps as usable.")
+	}
+}
+
+func TestMetadataUpdate(t *testing.T) {
+	err := UpdateMetadata()
+	if err != nil {
+		t.Error(err)
+	}
+
+	apps, err := AllUsableApps()
+	if err != nil {
+		t.Error(err)
+	}
+	if len(apps) == 0 {
+		t.Error("Metadata update failed. No apps found.")
+	}
+}
+
+func BenchmarkMetadataUpdate(b *testing.B) {
+	err := UpdateMetadata()
+	if err != nil {
+		b.Error(err)
 	}
 }

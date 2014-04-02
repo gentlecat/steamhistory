@@ -19,9 +19,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/tsukanov/steamhistory/storage"
-	"github.com/tsukanov/steamhistory/storage/analysis"
-	"github.com/tsukanov/steamhistory/tracker"
+	"github.com/tsukanov/steamhistory/analysis"
+	"github.com/tsukanov/steamhistory/apps"
+	"github.com/tsukanov/steamhistory/usage"
 	"github.com/tsukanov/steamhistory/webface"
 )
 
@@ -41,7 +41,7 @@ func main() {
 
 	case "update-metadata":
 		log.Println("Updating metadata...")
-		err := tracker.UpdateMetadata()
+		err := apps.UpdateMetadata()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -49,7 +49,7 @@ func main() {
 
 	case "record-history":
 		log.Println("Recording app usage history...")
-		err := tracker.RecordHistory()
+		err := usage.RecordHistory()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -57,7 +57,7 @@ func main() {
 
 	case "cleanup":
 		log.Println("Doing history cleanup...")
-		err := storage.HistoryCleanup()
+		err := usage.HistoryCleanup()
 		if err != nil {
 			log.Fatal(err)
 		}

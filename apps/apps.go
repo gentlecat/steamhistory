@@ -1,10 +1,6 @@
-/*
-Package storage provides interface to storage system.
-Storage system consists of multiple SQLite databases:
- - database with metadata about applications;
- - databases with usage history for every application.
-*/
-package storage
+// Package apps provides access to metadata about applications distributed on
+// Steam platform.
+package apps
 
 import (
 	"database/sql"
@@ -45,8 +41,15 @@ func OpenMetadataDB() (*sql.DB, error) {
 	return db, nil
 }
 
-// UpdateMetadata updates metadata about application or creates a new record.
-func UpdateMetadata(apps []steam.App) error {
+func UpdateMetadata() error {
+	apps, err := steam.GetApps()
+	if err != nil {
+		return err
+	}
+	return SaveMetadata(apps)
+}
+
+func SaveMetadata(apps []steam.App) error {
 	db, err := OpenMetadataDB()
 	if err != nil {
 		return err

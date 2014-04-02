@@ -6,20 +6,21 @@ import (
 	"log"
 	"sync"
 
+	"github.com/tsukanov/steamhistory/apps"
 	"github.com/tsukanov/steamhistory/steam"
-	"github.com/tsukanov/steamhistory/storage"
+	"github.com/tsukanov/steamhistory/usage"
 )
 
 // DetectUnusableApps finds applications that have no active users and marks
 // them as unusable.
 func DetectUnusableApps() error {
-	apps, err := storage.AllUsableApps()
+	applications, err := apps.AllUsableApps()
 	if err != nil {
 		return err
 	}
 
-	for _, app := range apps {
-		db, err := storage.OpenAppUsageDB(app.ID)
+	for _, app := range applications {
+		db, err := usage.OpenAppUsageDB(app.ID)
 		if err != nil {
 			log.Println(app, err)
 			continue
@@ -40,14 +41,14 @@ func DetectUnusableApps() error {
 			continue
 		}
 		if count > 10 && avg < 1 {
-			err = storage.MarkAppAsUnusable(app.ID)
+			err = apps.MarkAppAsUnusable(app.ID)
 			log.Println(fmt.Sprintf("Marked app %s (%d) as unusable.", app.Name, app.ID))
 			if err != nil {
 				log.Println(err)
 				continue
 			}
 			// Removing history
-			err = storage.RemoveAppUsageDB(app.ID)
+			err = usage.RemoveAppUsageDB(app.ID)
 			if err != nil {
 				log.Println(err)
 			}
@@ -60,7 +61,7 @@ func DetectUnusableApps() error {
 
 // DetectUsableApps checks if any of the unusable applications become usable.
 func DetectUsableApps() error {
-	apps, err := storage.AllUnusableApps()
+	applications, err := apps.AllUnusableApps()
 	if err != nil {
 		return err
 	}
@@ -79,7 +80,7 @@ func DetectUsableApps() error {
 					continue
 				}
 				if count > 5 {
-					err = storage.MarkAppAsUsable(app.ID)
+					err = apps.MarkAppAsUsable(app.ID)
 					if err != nil {
 						log.Println(err)
 						continue
@@ -91,7 +92,7 @@ func DetectUsableApps() error {
 	}
 
 	// Processing all links by spreading them to `free` goroutines
-	for _, app := range apps {
+	for _, app := range applications {
 		appChan <- app
 	}
 	close(appChan) // Closing channel (waiting in goroutines won't continue any more)

@@ -5,8 +5,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/tsukanov/steamhistory/apps"
 	"github.com/tsukanov/steamhistory/steam"
-	"github.com/tsukanov/steamhistory/storage"
+	"github.com/tsukanov/steamhistory/usage"
 )
 
 func TestMostPopularAppsToday(t *testing.T) {
@@ -24,7 +25,7 @@ func TestMostPopularAppsToday(t *testing.T) {
 			Name: "Half-Life 3",
 		},
 	}
-	err := storage.UpdateMetadata(sampleApps)
+	err := apps.SaveMetadata(sampleApps)
 	if err != nil {
 		t.Error(err)
 	}
@@ -51,7 +52,7 @@ func TestMostPopularAppsToday(t *testing.T) {
 		},
 	}
 	for _, sample := range sampleUsage {
-		err := storage.MakeUsageRecord(sample.AppID, sample.UserCount, sample.Time)
+		err := usage.MakeUsageRecord(sample.AppID, sample.UserCount, sample.Time)
 		if err != nil {
 			t.Error(err)
 		}

@@ -1,32 +1,10 @@
-package tracker
+package usage
 
 import (
 	"testing"
 
-	"github.com/tsukanov/steamhistory/storage"
+	"github.com/tsukanov/steamhistory/apps"
 )
-
-func TestMetadataUpdate(t *testing.T) {
-	err := UpdateMetadata()
-	if err != nil {
-		t.Error(err)
-	}
-
-	apps, err := storage.AllUsableApps()
-	if err != nil {
-		t.Error(err)
-	}
-	if len(apps) == 0 {
-		t.Error("Metadata update failed. No apps found.")
-	}
-}
-
-func BenchmarkMetadataUpdate(b *testing.B) {
-	err := UpdateMetadata()
-	if err != nil {
-		b.Error(err)
-	}
-}
 
 func TestHistoryRecorder(t *testing.T) {
 	if testing.Short() {
@@ -34,7 +12,7 @@ func TestHistoryRecorder(t *testing.T) {
 	}
 
 	// Adding apps so we can record their usage data
-	err := UpdateMetadata()
+	err := apps.UpdateMetadata()
 	if err != nil {
 		t.Error(err)
 	}
@@ -52,7 +30,7 @@ func BenchmarkHistoryRecorder(b *testing.B) {
 	}
 
 	// Adding apps so we can record their usage data
-	err := UpdateMetadata()
+	err := apps.UpdateMetadata()
 	if err != nil {
 		b.Error(err)
 	}

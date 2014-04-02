@@ -1,4 +1,4 @@
-package storage
+package usage
 
 import (
 	"database/sql"
@@ -9,6 +9,7 @@ import (
 
 	"bitbucket.org/kardianos/osext"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/tsukanov/steamhistory/apps"
 )
 
 const (
@@ -123,7 +124,7 @@ func cleanup(appID int) {
 // HistoryCleanup removes all records with 0 value for all usable apps.
 // This fixes an issue when API sometimes returnes 0 value.
 func HistoryCleanup() error {
-	apps, err := AllUsableApps()
+	apps, err := apps.AllUsableApps()
 	if err != nil {
 		return err
 	}
