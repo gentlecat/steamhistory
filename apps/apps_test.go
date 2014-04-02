@@ -24,22 +24,10 @@ func TestMetadataSave(t *testing.T) {
 	removeMetadataDB()
 
 	samples := []steam.App{
-		{
-			ID:   0,
-			Name: "Steam?!",
-		},
-		{
-			ID:   1,
-			Name: "Client?!",
-		},
-		{
-			ID:   2,
-			Name: "Yes it is",
-		},
-		{
-			ID:   3,
-			Name: "Half-Life 3",
-		},
+		{ID: 0, Name: "App with ID 0"},
+		{ID: 1, Name: "App with ID 1"},
+		{ID: 3, Name: "App with ID 3"},
+		{ID: 8, Name: "App with ID 8"},
 	}
 
 	// Updating (actually adding)
@@ -128,9 +116,12 @@ func TestMetadataUpdate(t *testing.T) {
 	}
 }
 
+var result error
+
 func BenchmarkMetadataUpdate(b *testing.B) {
-	err := UpdateMetadata()
-	if err != nil {
-		b.Error(err)
+	var err error
+	for i := 0; i < b.N; i++ {
+		err = UpdateMetadata()
 	}
+	result = err
 }

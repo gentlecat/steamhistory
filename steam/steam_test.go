@@ -18,3 +18,21 @@ func TestAppsGetter(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+var result error
+
+func BenchmarkUserCountGetter(b *testing.B) {
+	var err error
+	for i := 0; i < b.N; i++ {
+		_, err = GetUserCount(0)
+	}
+	result = err
+}
+
+func BenchmarkAppsGetter(b *testing.B) {
+	var err error
+	for i := 0; i < b.N; i++ {
+		_, err = GetApps()
+	}
+	result = err
+}

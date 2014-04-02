@@ -12,18 +12,9 @@ import (
 
 func TestMostPopularAppsToday(t *testing.T) {
 	sampleApps := []steam.App{
-		{
-			ID:   0,
-			Name: "Team Fortress",
-		},
-		{
-			ID:   1,
-			Name: "Dota 2",
-		},
-		{
-			ID:   3,
-			Name: "Half-Life 3",
-		},
+		{ID: 0, Name: "Team Fortress"},
+		{ID: 1, Name: "Dota 2"},
+		{ID: 3, Name: "Half-Life 3"},
 	}
 	err := apps.SaveMetadata(sampleApps)
 	if err != nil {
