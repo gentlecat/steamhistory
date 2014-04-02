@@ -124,11 +124,11 @@ func cleanup(appID int) {
 // HistoryCleanup removes all records with 0 value for all usable apps.
 // This fixes an issue when API sometimes returnes 0 value.
 func HistoryCleanup() error {
-	apps, err := apps.AllUsableApps()
+	applications, err := apps.AllUsableApps()
 	if err != nil {
 		return err
 	}
-	for _, app := range apps {
+	for _, app := range applications {
 		cleanup(app.ID)
 	}
 	return nil
