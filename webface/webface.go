@@ -1,30 +1,20 @@
-/*
-Package webface provides web interface to view collected data.
-It will not work unless you copy static files and templates into
-directory with an executable:
- - webface/templates/*
- - webface/static/*
-Web server must serve static files!
-*/
+// Package webface provides web interface to view collected data.
 package webface
 
 import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net"
 	"net/http"
 	"net/http/fcgi"
 	"strconv"
 
-	"bitbucket.org/kardianos/osext"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/gorilla/mux"
 	"github.com/tsukanov/steamhistory/analysis"
 	"github.com/tsukanov/steamhistory/apps"
-	"github.com/tsukanov/steamhistory/steam"
 	"github.com/tsukanov/steamhistory/usage"
 )
 
@@ -46,18 +36,9 @@ func StartDev() {
 
 func makeRouter() *mux.Router {
 	r := mux.NewRouter().StrictSlash(true)
-
-	// Web UI
-	r.HandleFunc("/", homeHandler)
-	r.HandleFunc("/{appid:[0-9]+}", appHandler)
-	r.HandleFunc("/popular", popularHandler)
-
-	// API
-	api := r.PathPrefix("/api").Subrouter().StrictSlash(true)
-	api.HandleFunc("/apps", appsHandler)
-	api.HandleFunc("/apps/popular", dailyPopularHandler)
-	api.HandleFunc("/history/{appid:[0-9]+}", historyHandler)
-
+	r.HandleFunc("/apps", appsHandler)
+	r.HandleFunc("/apps/popular", dailyPopularHandler)
+	r.HandleFunc("/history/{appid:[0-9]+}", historyHandler)
 	return r
 }
 
@@ -66,65 +47,6 @@ var mc *memcache.Client = memcache.New("localhost:11211")
 /*
  * Handlers
  */
-
-// basicHandler just loads specified template, combines it with base template
-// and writes result into ResponseWriter.
-func basicHandler(w http.ResponseWriter, r *http.Request, file string) {
-	exeloc, err := osext.ExecutableFolder()
-	t, err := template.ParseFiles(
-		exeloc+"webface/templates/base.html",
-		exeloc+"webface/templates/"+file)
-	if err != nil {
-		http.Error(w, "Internal error.", http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-	err = t.Execute(w, nil)
-	if err != nil {
-		http.Error(w, "Internal error.", http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-}
-
-func appHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	appId, err := strconv.Atoi(vars["appid"])
-	if err != nil {
-		http.Error(w, "Internal error.", http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-
-	appName, err := apps.GetName(appId)
-	if err != nil {
-		http.Error(w, "No app with this ID", http.StatusNotFound)
-		return
-	}
-
-	exeloc, err := osext.ExecutableFolder()
-	t, err := template.ParseFiles(
-		exeloc+"webface/templates/base.html",
-		exeloc+"webface/templates/app.html")
-	if err != nil {
-		http.Error(w, "Internal error.", http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-	err = t.Execute(w, steam.App{
-		ID:   appId,
-		Name: appName,
-	})
-	if err != nil {
-		http.Error(w, "Internal error.", http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-}
-
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	basicHandler(w, r, "home.html")
-}
 
 func historyHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -174,10 +96,6 @@ func historyHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
-}
-
-func popularHandler(w http.ResponseWriter, r *http.Request) {
-	basicHandler(w, r, "popular.html")
 }
 
 func dailyPopularHandler(w http.ResponseWriter, r *http.Request) {
@@ -245,8 +163,4 @@ func appsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
-}
-
-func aboutHandler(w http.ResponseWriter, r *http.Request) {
-	basicHandler(w, r, "about.html")
 }
