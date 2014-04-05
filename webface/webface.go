@@ -100,13 +100,14 @@ func historyHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 		}
 	}
-	w.Header().Set("Content-Type", "application/json")
 
 	queries := r.URL.Query()
 	callback, ok := queries["callback"]
 	if ok {
+		w.Header().Set("Content-Type", "application/javascript")
 		fmt.Fprintf(w, "%s(%s)", callback[0], b)
 	} else {
+		w.Header().Set("Content-Type", "application/json")
 		w.Write(b)
 	}
 }
@@ -140,8 +141,10 @@ func dailyPopularHandler(w http.ResponseWriter, r *http.Request) {
 	queries := r.URL.Query()
 	callback, ok := queries["callback"]
 	if ok {
+		w.Header().Set("Content-Type", "application/javascript")
 		fmt.Fprintf(w, "%s(%s)", callback[0], b)
 	} else {
+		w.Header().Set("Content-Type", "application/json")
 		w.Write(b)
 	}
 }
@@ -179,12 +182,13 @@ func appsHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 		}
 	}
-	w.Header().Set("Content-Type", "application/json")
 
 	callback, ok := queries["callback"]
 	if ok {
+		w.Header().Set("Content-Type", "application/javascript")
 		fmt.Fprintf(w, "%s(%s)", callback[0], b)
 	} else {
+		w.Header().Set("Content-Type", "application/json")
 		w.Write(b)
 	}
 }
