@@ -1,7 +1,6 @@
 package analysis
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -9,6 +8,44 @@ import (
 	"github.com/tsukanov/steamhistory/steam"
 	"github.com/tsukanov/steamhistory/usage"
 )
+
+func TestCounters(t *testing.T) {
+	sampleApps := []steam.App{
+		{ID: 0, Name: "Team Fortress"},
+		{ID: 1, Name: "Dota 2"},
+		{ID: 3, Name: "Half-Life 3"},
+	}
+	err := apps.SaveMetadata(sampleApps)
+	if err != nil {
+		t.Error(err)
+	}
+
+	count, err := CountAllApps()
+	if err != nil {
+		t.Error(err)
+	}
+	if count != len(sampleApps) {
+		t.Fatal("Number of apps returned by CountAllApps is incorrect!")
+	}
+
+	apps.MarkAppAsUnusable(sampleApps[0].ID)
+
+	count, err = CountUnusableApps()
+	if err != nil {
+		t.Error(err)
+	}
+	if count != 1 {
+		t.Fatal("Number of apps returned by CountUnusableApps is incorrect!")
+	}
+
+	count, err = CountUsableApps()
+	if err != nil {
+		t.Error(err)
+	}
+	if count != len(sampleApps)-1 {
+		t.Fatal("Number of apps returned by CountUnusableApps is incorrect!")
+	}
+}
 
 func TestMostPopularAppsToday(t *testing.T) {
 	sampleApps := []steam.App{
@@ -49,9 +86,8 @@ func TestMostPopularAppsToday(t *testing.T) {
 		}
 	}
 
-	apps, err := MostPopularAppsToday()
+	_, err = MostPopularAppsToday()
 	if err != nil {
 		t.Error(err)
 	}
-	fmt.Println(apps)
 }

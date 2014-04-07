@@ -11,6 +11,42 @@ import (
 	"github.com/tsukanov/steamhistory/usage"
 )
 
+func CountAllApps() (int, error) {
+	db, err := apps.OpenMetadataDB()
+	if err != nil {
+		return 0, err
+	}
+	defer db.Close()
+
+	var count int
+	err = db.QueryRow("SELECT count(*) FROM metadata").Scan(&count)
+	return count, err
+}
+
+func CountUsableApps() (int, error) {
+	db, err := apps.OpenMetadataDB()
+	if err != nil {
+		return 0, err
+	}
+	defer db.Close()
+
+	var count int
+	err = db.QueryRow("SELECT count(*) FROM metadata WHERE usable=1").Scan(&count)
+	return count, err
+}
+
+func CountUnusableApps() (int, error) {
+	db, err := apps.OpenMetadataDB()
+	if err != nil {
+		return 0, err
+	}
+	defer db.Close()
+
+	var count int
+	err = db.QueryRow("SELECT count(*) FROM metadata WHERE usable=0").Scan(&count)
+	return count, err
+}
+
 // DetectUnusableApps finds applications that have no active users and marks
 // them as unusable.
 func DetectUnusableApps() error {
