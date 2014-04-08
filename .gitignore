@@ -24,3 +24,6 @@ _testmain.go
 
 # SQLite database files
 *.db
+
+# Configutation
+config.ini
