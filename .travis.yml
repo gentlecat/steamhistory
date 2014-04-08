@@ -4,11 +4,5 @@ go:
  - 1.2.1
  - tip
 
-install:
-  - go get github.com/mattn/go-sqlite3
-  - go get github.com/gorilla/mux
-  - go get github.com/bradfitz/gomemcache/memcache
-  - go get bitbucket.org/kardianos/osext
-
 script:
   - go test ./... -bench .
