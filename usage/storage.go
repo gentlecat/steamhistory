@@ -122,7 +122,7 @@ func cleanup(appID int) {
 }
 
 // HistoryCleanup removes all records with 0 value for all usable apps.
-// This fixes an issue when API sometimes returnes 0 value.
+// This fixes an issue when Steam API sometimes returns 0 value.
 func HistoryCleanup() error {
 	applications, err := apps.AllUsableApps()
 	if err != nil {
