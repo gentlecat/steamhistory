@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"bitbucket.org/kardianos/osext"
-	"github.com/tsukanov/steamhistory/apps"
-	"github.com/tsukanov/steamhistory/steam"
+	"github.com/steamhistory/core/apps"
+	"github.com/steamhistory/core/steam"
 )
 
 func removeAllHistory() error {

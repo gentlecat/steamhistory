@@ -7,7 +7,7 @@ import (
 	"bitbucket.org/kardianos/osext"
 	"code.google.com/p/goconf/conf"
 	"github.com/stathat/go"
-	"github.com/tsukanov/steamhistory/analysis"
+	"github.com/steamhistory/core/analysis"
 )
 
 const configSection = "stathat"

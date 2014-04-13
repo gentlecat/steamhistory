@@ -6,9 +6,9 @@ import (
 	"log"
 	"sync"
 
-	"github.com/tsukanov/steamhistory/apps"
-	"github.com/tsukanov/steamhistory/steam"
-	"github.com/tsukanov/steamhistory/usage"
+	"github.com/steamhistory/core/apps"
+	"github.com/steamhistory/core/steam"
+	"github.com/steamhistory/core/usage"
 )
 
 func CountAllApps() (int, error) {

@@ -9,7 +9,7 @@ import (
 
 	"bitbucket.org/kardianos/osext"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/tsukanov/steamhistory/apps"
+	"github.com/steamhistory/core/apps"
 )
 
 const (

@@ -1,4 +1,4 @@
-# [Steam History](http://steamhistory.com/) [![Build Status](https://travis-ci.org/tsukanov/steamhistory.svg?branch=master)](https://travis-ci.org/tsukanov/steamhistory)
+# [Steam History](http://steamhistory.com/) [![Build Status](https://travis-ci.org/steamhistory/core.svg?branch=master)](https://travis-ci.org/steamhistory/core)
 
 Steam distributes thousands of games and used by millions of PC gamers every day to play games and interact with their friends and the rest of the community. Steam provides [some stats](http://store.steampowered.com/stats) about usage, but there is not much info available. Steam History project tries to solve part of this problem by recording usage history for *all* apps distributed on Steam.
 
@@ -29,8 +29,8 @@ Some apps returned by Steam Web API cannot be run in Steam Client. That means th
 
 ### Web interface
 
-**See [steamhistory-viewer](https://github.com/tsukanov/steamhistory-viewer) project.**
+**See [viewer](https://github.com/steamhistory/viewer) project.**
 
 ## Developers
 
-**See [API documentation](https://github.com/tsukanov/steamhistory/wiki/Steam-History-API).**
+**See [API documentation](https://github.com/steamhistory/core/wiki/Steam-History-API).**
