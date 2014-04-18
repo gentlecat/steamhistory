@@ -21,11 +21,11 @@ import (
 // Start starts FastCGI server at 127.0.0.1:9000
 func Start() {
 	log.Println("Starting server...")
-	log.Println("Listening on 127.0.0.1:9000...")
 	l, err := net.Listen("tcp", "127.0.0.1:9000")
 	if err != nil {
 		log.Fatal("Failed to start server!", err)
 	}
+	log.Println("Listening on 127.0.0.1:9000...")
 	fcgi.Serve(l, makeRouter())
 }
 
