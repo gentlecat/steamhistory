@@ -9,7 +9,7 @@ import (
 
 	"bitbucket.org/kardianos/osext"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/steamhistory/core/apps"
+	"github.com/steamhistory/steamhistory/apps"
 )
 
 const (
@@ -23,11 +23,11 @@ func OpenAppUsageDB(appID int) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = os.MkdirAll(exeloc+UsageHistoryDirectory, 0774)
+	err = os.MkdirAll(exeloc+UsageHistoryLocation, 0774)
 	if err != nil {
 		return nil, err
 	}
-	db, err := sql.Open("sqlite3", fmt.Sprintf("%s%s/%d.db", exeloc, UsageHistoryDirectory, appID))
+	db, err := sql.Open("sqlite3", fmt.Sprintf("%s%s/%d.db", exeloc, UsageHistoryLocation, appID))
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func RemoveAppUsageDB(appID int) error {
 	if err != nil {
 		return err
 	}
-	return os.Remove(fmt.Sprintf("%s%s/%d.db", exeloc, UsageHistoryDirectory, appID))
+	return os.Remove(fmt.Sprintf("%s%s/%d.db", exeloc, UsageHistoryLocation, appID))
 }
 
 // MakeUsageRecord adds a record with current numer of users for a specified

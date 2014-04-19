@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"bitbucket.org/kardianos/osext"
-	"github.com/steamhistory/core/steam"
+	"github.com/steamhistory/steamhistory/steam"
 )
 
 func removeMetadataDB() error {

@@ -5,9 +5,9 @@ import (
 	"sort"
 	"time"
 
-	"github.com/steamhistory/core/apps"
-	"github.com/steamhistory/core/steam"
-	"github.com/steamhistory/core/usage"
+	"github.com/steamhistory/steamhistory/apps"
+	"github.com/steamhistory/steamhistory/steam"
+	"github.com/steamhistory/steamhistory/usage"
 )
 
 type peak struct {

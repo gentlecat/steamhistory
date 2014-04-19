@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/steamhistory/core/apps"
-	"github.com/steamhistory/core/steam"
+	"github.com/steamhistory/steamhistory/apps"
+	"github.com/steamhistory/steamhistory/steam"
 )
 
 // RecordHistory records current number of users for all usable applications.

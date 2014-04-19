@@ -13,9 +13,9 @@ import (
 
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/gorilla/mux"
-	"github.com/steamhistory/core/analysis"
-	"github.com/steamhistory/core/apps"
-	"github.com/steamhistory/core/usage"
+	"github.com/steamhistory/steamhistory/analysis"
+	"github.com/steamhistory/steamhistory/apps"
+	"github.com/steamhistory/steamhistory/usage"
 )
 
 // Start starts FastCGI server at 127.0.0.1:9000

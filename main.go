@@ -19,10 +19,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/steamhistory/core/analysis"
-	"github.com/steamhistory/core/apps"
-	"github.com/steamhistory/core/usage"
-	"github.com/steamhistory/core/webface"
+	"github.com/steamhistory/steamhistory/analysis"
+	"github.com/steamhistory/steamhistory/apps"
+	"github.com/steamhistory/steamhistory/usage"
+	"github.com/steamhistory/steamhistory/webface"
 )
 
 func main() {
