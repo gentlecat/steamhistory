@@ -15,7 +15,7 @@ func removeAllHistory() error {
 	if err != nil {
 		return err
 	}
-	err = os.RemoveAll(exeloc + UsageHistoryDirectory)
+	err = os.RemoveAll(exeloc + UsageHistoryLocation)
 	if err != nil {
 		return err
 	}

@@ -13,7 +13,7 @@ func removeMetadataDB() error {
 	if err != nil {
 		return err
 	}
-	err = os.Remove(exeloc + MetadataDBName)
+	err = os.Remove(exeloc + MetadataDBLocation + MetadataDBName)
 	if err != nil {
 		return err
 	}
