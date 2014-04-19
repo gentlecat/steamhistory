@@ -1,5 +1,5 @@
-// Package webface provides web interface to view collected data.
-package webface
+// Package server provides web interface to view collected data.
+package server
 
 import (
 	"crypto/md5"

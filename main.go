@@ -4,8 +4,8 @@ This application is built to record usage history for apps on Steam.
 Usage: steamhistory command
 
 Commands:
-	start-webface - Start FastCGI server at 127.0.0.1:9000
-	start-webface-dev - Start development server at localhost:8080
+	run-server - Start FastCGI server at 127.0.0.1:9000
+	run-server-dev - Start development server at localhost:8080
 	update-metadata - Update metadata for all applications
 	record-history - Record usage history
 	cleanup - History cleanup
@@ -21,8 +21,8 @@ import (
 
 	"github.com/steamhistory/steamhistory/analysis"
 	"github.com/steamhistory/steamhistory/apps"
+	"github.com/steamhistory/steamhistory/server"
 	"github.com/steamhistory/steamhistory/usage"
-	"github.com/steamhistory/steamhistory/webface"
 )
 
 func main() {
@@ -33,11 +33,11 @@ func main() {
 
 	switch os.Args[1] {
 
-	case "start-webface":
-		webface.Start()
+	case "run-server":
+		server.Start()
 
-	case "start-webface-dev":
-		webface.StartDev()
+	case "run-server-dev":
+		server.StartDev()
 
 	case "update-metadata":
 		log.Println("Updating metadata...")
