@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	UsageHistoryDirectory = "usagedata" // Directory which contains databases with usage history.
+	UsageHistoryLocation = "data/history" // Directory which contains databases with usage history
 )
 
 // OpenAppUsageDB opens database with usage history for a specified application

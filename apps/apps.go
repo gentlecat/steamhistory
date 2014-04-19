@@ -4,6 +4,7 @@ package apps
 
 import (
 	"database/sql"
+	"os"
 	"time"
 
 	"bitbucket.org/kardianos/osext"
@@ -12,7 +13,8 @@ import (
 )
 
 const (
-	MetadataDBName = "app_metadata.db" // Name of the database with metadata about apps
+	MetadataDBLocation = "data"
+	MetadataDBName     = "metadata.db" // Name of the database with metadata about apps
 )
 
 // OpenMetadataDB opens database with metadata about all apps and, if successful,
@@ -22,7 +24,11 @@ func OpenMetadataDB() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	db, err := sql.Open("sqlite3", exeloc+MetadataDBName)
+	err = os.MkdirAll(exeloc+MetadataDBLocation, 0774)
+	if err != nil {
+		return nil, err
+	}
+	db, err := sql.Open("sqlite3", exeloc+MetadataDBLocation+MetadataDBName)
 	if err != nil {
 		return nil, err
 	}
