@@ -28,7 +28,7 @@ func OpenMetadataDB() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	db, err := sql.Open("sqlite3", exeloc+MetadataDBLocation+MetadataDBName)
+	db, err := sql.Open("sqlite3", exeloc+MetadataDBLocation+"/"+MetadataDBName)
 	if err != nil {
 		return nil, err
 	}
