@@ -47,6 +47,7 @@ func OpenMetadataDB() (*sql.DB, error) {
 	return db, nil
 }
 
+// UpdateMetadata updates existing apps and adds new.
 func UpdateMetadata() error {
 	apps, err := steam.GetApps()
 	if err != nil {
@@ -55,6 +56,8 @@ func UpdateMetadata() error {
 	return SaveMetadata(apps)
 }
 
+// UpdateMetadata saves metadata about an application in specific database
+// (based on appid).
 func SaveMetadata(apps []steam.App) error {
 	db, err := OpenMetadataDB()
 	if err != nil {
@@ -161,7 +164,7 @@ func AllUnusableApps() ([]steam.App, error) {
 	return apps, nil
 }
 
-// GetName returns name of the specified application.
+// GetName returns name of a specified application.
 func GetName(appId int) (name string, err error) {
 	db, err := OpenMetadataDB()
 	if err != nil {
@@ -182,7 +185,7 @@ func GetName(appId int) (name string, err error) {
 	return name, nil
 }
 
-// Search function finds applications that have name simmilar to one that is
+// Search finds applications that have name simmilar to one that is
 // specified in a query. It's case insensitive. Returns at most 10 results.
 func Search(query string) (apps []steam.App, err error) {
 	db, err := OpenMetadataDB()
