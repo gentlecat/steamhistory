@@ -11,6 +11,7 @@ import (
 	"github.com/steamhistory/steamhistory/usage"
 )
 
+// CountAllApps returns total number of apps in the metadata database.
 func CountAllApps() (int, error) {
 	db, err := apps.OpenMetadataDB()
 	if err != nil {
@@ -23,6 +24,7 @@ func CountAllApps() (int, error) {
 	return count, err
 }
 
+// CountUsableApps returns total number of usable apps.
 func CountUsableApps() (int, error) {
 	db, err := apps.OpenMetadataDB()
 	if err != nil {
@@ -35,6 +37,7 @@ func CountUsableApps() (int, error) {
 	return count, err
 }
 
+// CountUnusableApps returns total number of unusable apps.
 func CountUnusableApps() (int, error) {
 	db, err := apps.OpenMetadataDB()
 	if err != nil {
