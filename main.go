@@ -1,16 +1,9 @@
 /*
-This application is built to record usage history for apps on Steam.
-
-Usage: steamhistory command
+Usage: collector command
 
 Commands:
-	run-server - Start FastCGI server at 127.0.0.1:9000
-	run-server-dev - Start development server at localhost:8080
 	update-metadata - Update metadata for all applications
 	record-history - Record usage history
-	cleanup - History cleanup
-	detect-usable-apps - Detect usable apps
-	detect-unusable-apps - Detect unusable apps
 */
 package main
 
@@ -19,10 +12,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/steamhistory/steamhistory/analysis"
-	"github.com/steamhistory/steamhistory/apps"
-	"github.com/steamhistory/steamhistory/server"
-	"github.com/steamhistory/steamhistory/usage"
+	"github.com/steamhistory/collector/apps"
+	"github.com/steamhistory/collector/usage"
 )
 
 func main() {
@@ -32,12 +23,6 @@ func main() {
 	}
 
 	switch os.Args[1] {
-
-	case "run-server":
-		server.Start()
-
-	case "run-server-dev":
-		server.StartDev()
 
 	case "update-metadata":
 		log.Println("Updating metadata...")
@@ -54,30 +39,6 @@ func main() {
 			log.Fatal(err)
 		}
 		log.Println("History is recorded!")
-
-	case "cleanup":
-		log.Println("Doing history cleanup...")
-		err := usage.HistoryCleanup()
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println("History cleanup completed!")
-
-	case "detect-unusable-apps":
-		log.Println("Detecting unusable apps...")
-		err := analysis.DetectUnusableApps()
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println("Detection completed!")
-
-	case "detect-usable-apps":
-		log.Println("Detecting usable apps...")
-		err := analysis.DetectUsableApps()
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println("Detection completed!")
 
 	default:
 		fmt.Println("Unknown command! See documentation.")
