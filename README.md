@@ -1,5 +1,7 @@
 # Steam History / Data collector [![Build Status](https://travis-ci.org/steamhistory/collector.svg?branch=master)](https://travis-ci.org/steamhistory/collector) [![GoDoc](https://godoc.org/github.com/steamhistory/collector?status.png)](https://godoc.org/github.com/steamhistory/collector)
 
+**[Collector](https://github.com/steamhistory/collector)** | [Storage](https://github.com/steamhistory/storage) | [Processor](https://github.com/steamhistory/processor) | [Reporter](https://github.com/steamhistory/reporter)
+
 Steam distributes thousands of games and used by millions of PC gamers every day to play games and interact with their friends and the rest of the community. Steam provides [some stats](http://store.steampowered.com/stats) about usage, but there is not much info available. Steam History project tries to solve part of this problem by recording usage history for *all* apps distributed on Steam.
 
 ### Data sources
