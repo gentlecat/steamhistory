@@ -1,4 +1,4 @@
-# Steam History / Data collector [![Build Status](https://travis-ci.org/steamhistory/collector.svg?branch=master)](https://travis-ci.org/steamhistory/collector) [![GoDoc](https://godoc.org/github.com/steamhistory/collector?status.png)](https://godoc.org/github.com/steamhistory/collector)
+# Steam History / Collector [![Build Status](https://travis-ci.org/steamhistory/collector.svg?branch=master)](https://travis-ci.org/steamhistory/collector) [![GoDoc](https://godoc.org/github.com/steamhistory/collector?status.png)](https://godoc.org/github.com/steamhistory/collector)
 
 **[Collector](https://github.com/steamhistory/collector)** | [Storage](https://github.com/steamhistory/storage) | [Processor](https://github.com/steamhistory/processor) | [Reporter](https://github.com/steamhistory/reporter)
 
