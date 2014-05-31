@@ -21,9 +21,3 @@ _testmain.go
 
 *.exe
 *.test
-
-# SQLite database files
-*.db
-
-# Configutation
-config.ini
