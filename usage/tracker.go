@@ -1,4 +1,4 @@
-// Package usage provides intrface to application usage history.
+// Package usage provides functions to record application usage history.
 package usage
 
 import (

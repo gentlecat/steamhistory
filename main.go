@@ -1,4 +1,6 @@
 /*
+Collector can be used to update apps' metadata and record usage history.
+
 Usage: collector command
 
 Commands:
