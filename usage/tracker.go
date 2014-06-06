@@ -21,7 +21,7 @@ func RecordHistory() error {
 	appIDChan := make(chan int)
 	wg := new(sync.WaitGroup)
 	// Adding goroutines to workgroup
-	for i := 0; i < 200; i++ {
+	for i := 0; i < 100; i++ {
 		wg.Add(1)
 		go func(appIDChan chan int, wg *sync.WaitGroup) {
 			defer wg.Done() // Decreasing internal counter for wait-group as soon as goroutine finishes
