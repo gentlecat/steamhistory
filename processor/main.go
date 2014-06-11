@@ -85,7 +85,7 @@ func detectUnusableApps() error {
 			log.Println(err)
 			continue
 		}
-		if count > 10 && avg < 1 {
+		if count > 5 && avg < 1 {
 			err = apps.MarkAppAsUnusable(app.ID)
 			log.Println(fmt.Sprintf("Marked app %s (%d) as unusable.", app.Name, app.ID))
 			if err != nil {
