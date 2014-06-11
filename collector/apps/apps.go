@@ -2,8 +2,8 @@
 package apps
 
 import (
-	"github.com/steamhistory/collector/steam"
-	storage_apps "github.com/steamhistory/storage/apps"
+	"github.com/tsukanov/steamhistory/collector/steam"
+	storage_apps "github.com/tsukanov/steamhistory/storage/apps"
 )
 
 // UpdateMetadata updates existing apps and adds new ones.

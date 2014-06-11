@@ -14,8 +14,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/steamhistory/collector/apps"
-	"github.com/steamhistory/collector/usage"
+	"github.com/tsukanov/steamhistory/collector/apps"
+	"github.com/tsukanov/steamhistory/collector/usage"
 )
 
 func main() {

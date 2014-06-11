@@ -3,7 +3,7 @@ package apps
 import (
 	"testing"
 
-	"github.com/steamhistory/storage/apps"
+	"github.com/tsukanov/steamhistory/storage/apps"
 )
 
 func TestMetadataUpdate(t *testing.T) {

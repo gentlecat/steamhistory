@@ -3,7 +3,7 @@ package usage
 import (
 	"testing"
 
-	"github.com/steamhistory/collector/apps"
+	"github.com/tsukanov/steamhistory/collector/apps"
 )
 
 func TestHistoryRecorder(t *testing.T) {
