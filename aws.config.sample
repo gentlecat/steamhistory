@@ -1,0 +1,6 @@
+secret = YOUR_SECRET_KEY
+access = YOUR_ACCESS_KEY
+
+[glacier]
+vault = VAULT_NAME
+backup-file = backup.tar.gz
