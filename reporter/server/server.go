@@ -37,7 +37,6 @@ func StartDev() {
 
 func makeRouter() *mux.Router {
 	r := mux.NewRouter().StrictSlash(true)
-	r.HandleFunc("/", indexHandler)
 	r.HandleFunc("/apps", appsHandler)
 	r.HandleFunc("/apps/popular", dailyPopularHandler)
 	r.HandleFunc("/history/{appid:[0-9]+}", historyHandler)
@@ -49,11 +48,6 @@ var mc *memcache.Client = memcache.New("localhost:11211")
 /*
  * Handlers
  */
-
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte("See API documentation.\n"))
-}
 
 func historyHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

@@ -25,6 +25,7 @@ func main() {
 		log.Fatal("Failed to get AWS access key from config! ", err)
 	}
 
+	// TODO: Allow server customization.
 	conn := glacier.NewConnection(secret, access, aws.USEast)
 
 	// Opening backup file
