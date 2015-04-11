@@ -1,4 +1,4 @@
-# Steam History [![Build Status](https://travis-ci.org/tsukanov/steamhistory.svg?branch=master)](https://travis-ci.org/tsukanov/steamhistory) [![GoDoc](https://godoc.org/github.com/tsukanov/steamhistory?status.png)](https://godoc.org/github.com/tsukanov/steamhistory)
+# Steam History [![Build Status](https://travis-ci.org/gentlecat/steamhistory.svg?branch=master)](https://travis-ci.org/gentlecat/steamhistory) [![GoDoc](https://godoc.org/github.com/gentlecat/steamhistory?status.png)](https://godoc.org/github.com/gentlecat/steamhistory)
 
 Steam distributes thousands of games and used by millions of PC gamers every day to play games and interact with their friends and the rest of the community. Steam provides [some stats](http://store.steampowered.com/stats) about usage, but there is not much info available. Steam History project tries to solve part of this problem by allowing you to record usage history for *all* apps distributed on Steam.
 
